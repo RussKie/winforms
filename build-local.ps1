@@ -10,17 +10,17 @@ function Check-SdkExists {
 <#
 .SYNOPSIS
 
-Checks whether a system-wise NETCore SDK and a matching local NETCore SDK installations exist
+Checks whether a system-wise NET SDK and a matching local NET SDK installations exist
 
 .DESCRIPTION
 
-Checks whether a system-wise NETCore SDK and a matching local NETCore SDK installations exist
+Checks whether a system-wise NET SDK and a matching local NET SDK installations exist
 
 .PARAMETER LocalSdkLocation
-Specifies the expected location of local NETCore SDK (e.g. D:\winforms\.dotnet\sdk\3.0.100-preview5-011568).
+Specifies the expected location of local NET SDK (e.g. D:\winforms\.dotnet\sdk\3.0.100-preview5-011568).
 
 .PARAMETER SystemSdkLocation
-Specifies the expected location of local NETCore SDK (e.g. C:\Program Files\dotnet\sdk\3.0.100-preview5-011568).
+Specifies the expected location of local NET SDK (e.g. C:\Program Files\dotnet\sdk\3.0.100-preview5-011568).
 
 .INPUTS
 
@@ -59,17 +59,17 @@ function Create-SymLink {
 <#
 .SYNOPSIS
 
-Creates a symbolic link from a system-wise NETCore SDK to a local NETCore SDK installation
+Creates a symbolic link from a system-wise NET SDK to a local NET SDK installation
 
 .DESCRIPTION
 
-Creates a symbolic link from a system-wise NETCore SDK to a local NETCore SDK installation
+Creates a symbolic link from a system-wise NET SDK to a local NET SDK installation
 
 .PARAMETER LocalSdkLocation
-Specifies the expected location of local NETCore SDK (e.g. D:\winforms\.dotnet\sdk\3.0.100-preview5-011568).
+Specifies the expected location of local NET SDK (e.g. D:\winforms\.dotnet\sdk\3.0.100-preview5-011568).
 
 .PARAMETER SystemSdkLocation
-Specifies the expected location of local NETCore SDK (e.g. C:\Program Files\dotnet\sdk\3.0.100-preview5-011568).
+Specifies the expected location of local NET SDK (e.g. C:\Program Files\dotnet\sdk\3.0.100-preview5-011568).
 
 .INPUTS
 
@@ -117,7 +117,7 @@ function Invoke-FullCleanup {
       [Parameter(Mandatory=$true, Position=0)]
       [string] $SdkVersion,
       [Parameter(Mandatory=$true, Position=1)]
-      [string] $NETCoreAppVersion
+      [string] $NETAppVersion
     )
 
     Stop-Process -Name 'dotnet' -Force -ErrorAction Ignore
@@ -126,7 +126,7 @@ function Invoke-FullCleanup {
     $systenDotnetLocation = Get-SystemDotnetPath
     $locations = @()
     $locations += Get-ChildItem -Path $systenDotnetLocation -Filter sdk/$SdkVersion;
-    $locations += Get-ChildItem -Path $systenDotnetLocation -Filter shared/Microsoft.NETCore.App/$NETCoreAppVersion;
+    $locations += Get-ChildItem -Path $systenDotnetLocation -Filter shared/Microsoft.NET.App/$NETAppVersion;
 
     $locations | `
         ForEach-Object {
@@ -188,23 +188,23 @@ Checks whether the script needs to be restarted in the elevated mode
 The elevated mode is required in the following cases:
 - FullClean is requested, or
 - LocalSdkLocation or SystemSdkLocation does not exist, or
-- LocalNETCoreAppLocation or SystemNETCoreAppLocation does not exist.
+- LocalNETAppLocation or SystemNETAppLocation does not exist.
 
 
 .PARAMETER IsFullCleanRequested
 Specifies whether a full clean up is required.
 
 .PARAMETER LocalSdkLocation
-Specifies the expected location of local NETCore SDK (e.g. D:\winforms\.dotnet\sdk\3.0.100-preview5-011568).
+Specifies the expected location of local NET SDK (e.g. D:\winforms\.dotnet\sdk\3.0.100-preview5-011568).
 
 .PARAMETER SystemSdkLocation
-Specifies the expected location of local NETCore SDK (e.g. C:\Program Files\dotnet\sdk\3.0.100-preview5-011568).
+Specifies the expected location of local NET SDK (e.g. C:\Program Files\dotnet\sdk\3.0.100-preview5-011568).
 
-.PARAMETER LocalNETCoreAppLocation
-Specifies the expected location of local NETCore SDK (e.g. D:\winforms\.dotnet\shared\Microsoft.NETCore.App\3.0.0-preview7-27819-07).
+.PARAMETER LocalNETAppLocation
+Specifies the expected location of local NET SDK (e.g. D:\winforms\.dotnet\shared\Microsoft.NET.App\3.0.0-preview7-27819-07).
 
-.PARAMETER SystemNETCoreAppLocation
-Specifies the expected location of local NETCore SDK (e.g. C:\Program Files\dotnet\shared\Microsoft.NETCore.App\3.0.0-preview7-27819-07).
+.PARAMETER SystemNETAppLocation
+Specifies the expected location of local NET SDK (e.g. C:\Program Files\dotnet\shared\Microsoft.NET.App\3.0.0-preview7-27819-07).
 
 .INPUTS
 
@@ -224,17 +224,17 @@ None.
       [Parameter(Mandatory=$true, Position=2)]
       [string] $SystemSdkLocation,
       [Parameter(Mandatory=$true, Position=2)]
-      [string] $LocalNETCoreAppLocation,
+      [string] $LocalNETAppLocation,
       [Parameter(Mandatory=$true, Position=3)]
-      [string] $SystemNETCoreAppLocation
+      [string] $SystemNETAppLocation
     )
 
     $isSdkPresent = Check-SdkExists -LocalSdkLocation $LocalSdkLocation -SystemSdkLocation $SystemSdkLocation;
-    $isNETCoreAppPresent = Check-SdkExists -LocalSdkLocation $LocalNETCoreAppLocation -SystemSdkLocation $SystemNETCoreAppLocation;
+    $isNETAppPresent = Check-SdkExists -LocalSdkLocation $LocalNETAppLocation -SystemSdkLocation $SystemNETAppLocation;
 
     # if the SDK is found and not doing a full clean - we're done here
     if ($isSdkPresent -eq $true -and `
-        $isNETCoreAppPresent -eq $true -and `
+        $isNETAppPresent -eq $true -and `
         $IsFullCleanRequested -ne $true) {
         return;
     }
@@ -270,19 +270,19 @@ try {
     $localSdkLocation = [System.IO.Path]::Combine($localSdkPath, $sdkVersion);
     $systemSdkLocation = [string][System.IO.Path]::Combine($(Get-SystemDotnetPath), 'sdk', $sdkVersion);
 
-    # Detect the require version of NETCoreApp and see if we have it already
+    # Detect the require version of NETApp and see if we have it already
     [xml]$versionsProps = Get-Content -Raw -Path ./eng/Versions.props
     $value = $versionsProps.Project.PropertyGroup | Where-Object { $_['MicrosoftNETCoreAppPackageVersion'] -ne $null }
     $netCoreAppVersion = $value.InnerText
-    $localNETCoreAppLocation = [System.IO.Path]::Combine($localSharedPath, 'Microsoft.NETCore.App', $netCoreAppVersion);
-    $systemNETCoreAppLocation = [string][System.IO.Path]::Combine($(Get-SystemDotnetPath), 'shared\Microsoft.NETCore.App', $netCoreAppVersion);
+    $localNETAppLocation = [System.IO.Path]::Combine($localSharedPath, 'Microsoft.NET.App', $netCoreAppVersion);
+    $systemNETAppLocation = [string][System.IO.Path]::Combine($(Get-SystemDotnetPath), 'shared\Microsoft.NET.App', $netCoreAppVersion);
 
     Start-ElevatedModeIfRequired -IsFullCleanRequested $FullClean.ToBool() `
                                  -LocalSdkLocation $localSdkLocation -SystemSdkLocation $systemSdkLocation `
-                                 -LocalNETCoreAppLocation $localNETCoreAppLocation -SystemNETCoreAppLocation $systemNETCoreAppLocation
+                                 -LocalNETAppLocation $localNETAppLocation -SystemNETAppLocation $systemNETAppLocation
 
     if ($FullClean -eq $true) {
-        Invoke-FullCleanup -SdkVersion $sdkVersion -NETCoreAppVersion $netCoreAppVersion
+        Invoke-FullCleanup -SdkVersion $sdkVersion -NETAppVersion $netCoreAppVersion
     }
 
     # remove any rouge bin/obj folders that intermitently get created
@@ -300,7 +300,7 @@ try {
     Write-Host "√ Solution built" -ForegroundColor Green;
 
     Create-SymLink -LocalSdkLocation $localSdkLocation -SystemSdkLocation $systemSdkLocation
-    Create-SymLink -LocalSdkLocation $localNETCoreAppLocation -SystemSdkLocation $systemNETCoreAppLocation
+    Create-SymLink -LocalSdkLocation $localNETAppLocation -SystemSdkLocation $systemNETAppLocation
 
     if ($LastCode -ne 0) {
         Write-Host 'Χ Build failed....' -ForegroundColor Red

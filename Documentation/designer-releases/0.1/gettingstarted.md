@@ -1,30 +1,30 @@
-Getting started with WinForms on .NETCore
+Getting started with Windows Forms on .NET
 ==========================================
 
-Create your first WinForms .NET Core “Hello World” application
+Create your first Windows Forms .NET “Hello World” application
 --------------------------------------------------------------
 
-The way you create your .NET Core WinForms application is very similar to
+The way you create your .NET Windows Forms application is very similar to
 creating .NET Framework application:
 
 -   In the *Open recent/Get started* Dialog of Visual Studio 2019, click on
     *Create a new project*.
 
 -   Visual Studio shows the *Create a new project* dialog. In the project filter
-    textbox, enter “winforms” to filter all the templates to WinForms projects,
-    and pick *Windows Forms App (.NET Core) for C\#*.  
+    textbox, enter “winforms” to filter all the templates to Windows Forms projects,
+    and pick *Windows Forms App (.NET) for C\#*.  
 
     ![05CreateNewProject][05CreateNewProject]
 
-    **Note:** The Visual Basic language is currently not supported for .NET Core
-    WinForms applications.
+    **Note:** The Visual Basic language is currently not supported for .NET
+    Windows Forms applications.
 
 -   In the Dialog *Configure your new project*, enter a *Project name*, for
     example “HelloWinFormsCore”. Chose a file *Location* for the project files
-    and click *Create* to create the Visual Studio Solution with the WinForms
-    Core Project.  
+    and click *Create* to create the Visual Studio Solution with the Windows Forms
+    Project.  
 
-    **Note:** After you’ve created a new WinForms project, it might take Visual
+    **Note:** After you’ve created a new Windows Forms project, it might take Visual
     Studio a few seconds to properly load all files before you can open the
     designer by double-clicking on the Form1.cs.  
 
@@ -99,7 +99,7 @@ Now, let’s add a Button to the Form, but let’s do it in another way.
 
 -   Start the app by clicking *Debug* from the pulldown menu, click on *Start
     Debugging* (or alternatively press F5) and check, if your first designed
-    WinForms Core App acts as expected.
+    Windows Forms App acts as expected.
 
 **IMPORTANT:** Close the open Form in the Designer before you close the project
 or quit Visual Studio.

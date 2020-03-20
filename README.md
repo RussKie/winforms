@@ -11,9 +11,9 @@ For more information about the designer, please see the [Windows Forms Designer 
 
 To learn about project priorities as well as status and ship dates see the [Windows Forms Roadmap](roadmap.md).
 
-:warning: This repository contains WinForms for .NET Core. It does not contain the .NET Framework variant of WinForms.
+:warning: This repository contains Windows Forms for .NET. It does not contain the .NET Framework variant of Windows Forms.
 
-[Windows Presentation Foundation](https://github.com/dotnet/wpf) (WPF) is another UI framework used to build Windows desktop applications which is supported on .NET Core. WPF and Windows Forms applications  run only on Windows operating systems. They are part of the `Microsoft.NET.Sdk.WindowsDesktop` SDK. You are recommended to use Visual Studio 2019 Preview 1 to use WPF and Windows Forms with .NET Core.
+[Windows Presentation Foundation](https://github.com/dotnet/wpf) (WPF) is another UI framework used to build Windows desktop applications which is supported on .NET. WPF and Windows Forms applications  run only on Windows operating systems. They are part of the `Microsoft.NET.Sdk.WindowsDesktop` SDK. You are recommended to use Visual Studio 2019 to use WPF and Windows Forms with .NET.
 
 ## Getting started
 
@@ -43,9 +43,9 @@ To learn about project priorities as well as status and ship dates see the [Wind
 
 Some of the best ways to contribute are to try things out, file bugs, join in design conversations, and fix issues.
 
-* The [contributing guidelines][contributing] and the more general [.NET Core contributing guide](https://github.com/dotnet/corefx/blob/master/Documentation/project-docs/contributing.md) define contributing rules.
+* The [contributing guidelines][contributing] and the more general [.NET contributing guide](https://github.com/dotnet/runtime/blob/master/CONTRIBUTING.md) define contributing rules.
 * The [Developer Guide](Documentation/developer-guide.md) defines the setup and workflow for working on this repository.
-* If you have a question or have found a bug, [file an issue](https://github.com/dotnet/winforms/issues/new?template=bug_report.md).
+* If you have a question, have found a bug, or have or a proposal for a new API, [file an issue](https://github.com/dotnet/winforms/issues/new/choose).
 * Use [daily builds][getting-started] if you want to contribute and stay up to date with the team.
 
 ### .NET Framework issues
@@ -58,7 +58,7 @@ Security issues and bugs should be reported privately via email to the Microsoft
 
 ## Relationship to .NET Framework
 
-This codebase is a fork of the Windows Forms code in the .NET Framework 4.8. In Windows Forms .NET Core 3.0, we've strived to bring the two runtimes to a parity. However, since then, we've done a number of changes, including [breaking changes](https://docs.microsoft.com/dotnet/core/compatibility/winforms), which diverged the two.
+This codebase is a fork of the Windows Forms code in the .NET Framework 4.8. In Windows Forms .NET Core 3.0 and 3.1, we've strived to bring the two runtimes to a parity. However, since then, we've done a number of changes, including [breaking changes](https://docs.microsoft.com/dotnet/core/compatibility/winforms), which diverged the two.
 
 For more information about breaking changes, see the [Porting guide][porting-guidelines].
 
@@ -68,11 +68,11 @@ This project uses the [.NET Foundation Code of Conduct](https://dotnetfoundation
 
 ## License
 
-.NET Core (including the Windows Forms repository) is licensed under the [MIT license](LICENSE.TXT).
+.NET (including the Windows Forms repository) is licensed under the [MIT license](LICENSE.TXT).
 
 ## .NET Foundation
 
-.NET Core WinForms is a [.NET Foundation](https://www.dotnetfoundation.org/projects) project.<br />
+.NET WinForms is a [.NET Foundation](https://www.dotnetfoundation.org/projects) project.<br />
 See the [.NET home repository](https://github.com/Microsoft/dotnet) to find other .NET-related projects.
 
 [getting-started]: Documentation/getting-started.md

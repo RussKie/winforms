@@ -19,7 +19,7 @@ tlbimp c:\windows\system32\oleacc.dll /out:Accessibility.dll
 ildasm Accessibility.dll /out=Accessibility.il
 ```
 
-3. Replace the desktop assembly references with their corresponding .NETCore assemblies (since .NETCore doesn't provide a version of tlbimp.exe yet)
+3. Replace the desktop assembly references with their corresponding .NET assemblies (since .NET doesn't provide a version of tlbimp.exe yet)
     - replace `[mscorlib]System.Runtime.InteropServices` with `[INTEROP_ASSEMBLY]System.Runtime.InteropServices`
     - replace `[mscorlib]` with `[CORE_ASSEMBLY]`
     - review the diff
