@@ -1,4 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
@@ -248,12 +248,16 @@ namespace System.Windows.Forms
             {
                 if (systemIAccessible != null)
                 {
-                    return WrapIAccessible(systemIAccessible.accParent);
+                    try
+                    {
+                        return WrapIAccessible(systemIAccessible.accParent);
+                    }
+                    catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
+                    {
+                    }
                 }
-                else
-                {
-                    return null;
-                }
+
+                return null;
             }
         }
 
@@ -266,7 +270,13 @@ namespace System.Windows.Forms
             {
                 if (systemIAccessible != null)
                 {
-                    return (AccessibleRole)systemIAccessible.get_accRole(NativeMethods.CHILDID_SELF);
+                    try
+                    {
+                        return (AccessibleRole)systemIAccessible.get_accRole(NativeMethods.CHILDID_SELF);
+                    }
+                    catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
+                    {
+                    }
                 }
 
                 return AccessibleRole.None;
@@ -282,7 +292,13 @@ namespace System.Windows.Forms
             {
                 if (systemIAccessible != null)
                 {
-                    return (AccessibleStates)systemIAccessible.get_accState(NativeMethods.CHILDID_SELF);
+                    try
+                    {
+                        return (AccessibleStates)systemIAccessible.get_accState(NativeMethods.CHILDID_SELF);
+                    }
+                    catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
+                    {
+                    }
                 }
 
                 return AccessibleStates.None;
@@ -600,6 +616,78 @@ namespace System.Windows.Forms
                     default:
                         return !string.IsNullOrEmpty(DefaultAction);
                 }
+            }
+        }
+
+        internal TReturn GetFromSystemIAccessible<TReturn>(Func<TReturn> getFunction) where TReturn : class
+        {
+            if (systemIAccessible == null)
+            {
+                return null;
+            }
+
+            try
+            {
+                return getFunction();
+            }
+            catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
+            {
+                // System IAccessible is not found.
+            }
+            catch (ArgumentException)
+            {
+                // Argument exception can be thrown in case main system IAccessible cannot be gotten
+                // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
+            }
+
+            return null;
+        }
+
+        internal TReturn GetStructFromSystemIAccessible<TReturn>(
+            Func<TReturn> getFunction,
+            TReturn defaultReturnValue = default(TReturn)) where TReturn : struct
+        {
+            if (systemIAccessible == null)
+            {
+                return defaultReturnValue;
+            }
+
+            try
+            {
+                return getFunction();
+            }
+            catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
+            {
+                // System IAccessible is not found.
+            }
+            catch (ArgumentException)
+            {
+                // Argument exception can be thrown in case main system IAccessible cannot be gotten
+                // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
+            }
+
+            return defaultReturnValue;
+        }
+
+        internal void ExecuteWithSystemIAccessible(Action function)
+        {
+            if (systemIAccessible == null)
+            {
+                return;
+            }
+
+            try
+            {
+                function();
+            }
+            catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
+            {
+                // System IAccessible is not found.
+            }
+            catch (ArgumentException)
+            {
+                // Argument exception can be thrown in case main system IAccessible cannot be gotten
+                // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
             }
         }
 
@@ -926,6 +1014,11 @@ namespace System.Windows.Forms
                 {
                     // Not all objects provide a default action.
                 }
+                catch (ArgumentException)
+                {
+                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
+                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
+                }
             }
         }
 
@@ -1029,6 +1122,11 @@ namespace System.Windows.Forms
                 catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
                 {
                 }
+                catch (ArgumentException)
+                {
+                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
+                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
+                }
 
                 return;
             }
@@ -1078,6 +1176,11 @@ namespace System.Windows.Forms
                 catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
                 {
                 }
+                catch (ArgumentException)
+                {
+                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
+                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
+                }
             }
 
             return null;
@@ -1120,6 +1223,12 @@ namespace System.Windows.Forms
                 catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
                 {
                 }
+                catch (ArgumentException)
+                {
+                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
+                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
+                }
+
                 return;
             }
         }
@@ -1251,6 +1360,11 @@ namespace System.Windows.Forms
                 {
                     // Not all objects provide a default action.
                 }
+                catch (ArgumentException)
+                {
+                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
+                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
+                }
             }
 
             return null;
@@ -1287,6 +1401,11 @@ namespace System.Windows.Forms
                 }
                 catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
                 {
+                }
+                catch (ArgumentException)
+                {
+                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
+                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
                 }
             }
 
@@ -1376,6 +1495,11 @@ namespace System.Windows.Forms
                 catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
                 {
                 }
+                catch (ArgumentException)
+                {
+                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
+                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
+                }
             }
 
             return null;
@@ -1411,6 +1535,11 @@ namespace System.Windows.Forms
                 }
                 catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
                 {
+                }
+                catch (ArgumentException)
+                {
+                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
+                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
                 }
             }
 
@@ -1454,6 +1583,11 @@ namespace System.Windows.Forms
                 catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
                 {
                 }
+                catch (ArgumentException)
+                {
+                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
+                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
+                }
             }
 
             return null;
@@ -1493,7 +1627,20 @@ namespace System.Windows.Forms
             // Otherwise, use the system provided name
             if (systemIAccessible != null)
             {
-                string? retval = systemIAccessible.get_accName(childID);
+                string? retval = null;
+
+                try
+                {
+                    retval = systemIAccessible.get_accName(childID);
+                }
+                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
+                {
+                }
+                catch (ArgumentException)
+                {
+                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
+                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
+                }
 
                 if (IsClientObject)
                 {
@@ -1563,7 +1710,20 @@ namespace System.Windows.Forms
                 return null;
             }
 
-            return systemIAccessible.get_accRole(childID);
+            try
+            {
+                return systemIAccessible.get_accRole(childID);
+            }
+            catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
+            {
+            }
+            catch (ArgumentException)
+            {
+                // Argument exception can be thrown in case main system IAccessible cannot be gotten
+                // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
+            }
+
+            return AccessibleRole.None;
         }
 
         /// <summary>
@@ -1626,7 +1786,20 @@ namespace System.Windows.Forms
                 }
             }
 
-            return systemIAccessible?.get_accState(childID);
+            try
+            {
+                return systemIAccessible?.get_accState(childID);
+            }
+            catch (COMException e) when(e.ErrorCode == (int) HRESULT.DISP_E_MEMBERNOTFOUND)
+            {
+            }
+            catch (ArgumentException)
+            {
+                // Argument exception can be thrown in case main system IAccessible cannot be gotten
+                // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
+            }
+
+            return AccessibleStates.None;
         }
 
         /// <summary>
@@ -1661,6 +1834,11 @@ namespace System.Windows.Forms
                 catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
                 {
                 }
+                catch (ArgumentException)
+                {
+                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
+                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
+                }
             }
 
             return null;
@@ -1692,7 +1870,18 @@ namespace System.Windows.Forms
                 }
             }
 
-            systemIAccessible?.set_accName(childID, newName);
+            try
+            {
+                systemIAccessible?.set_accName(childID, newName);
+            }
+            catch (COMException e) when(e.ErrorCode == (int) HRESULT.DISP_E_MEMBERNOTFOUND)
+            {
+            }
+            catch (ArgumentException)
+            {
+                // Argument exception can be thrown in case main system IAccessible cannot be gotten
+                // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
+            }
         }
 
         /// <summary>
@@ -1729,6 +1918,11 @@ namespace System.Windows.Forms
                 }
                 catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
                 {
+                }
+                catch (ArgumentException)
+                {
+                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
+                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
                 }
             }
         }

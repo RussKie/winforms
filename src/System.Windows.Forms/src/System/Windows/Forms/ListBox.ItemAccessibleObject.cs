@@ -97,12 +97,14 @@ namespace System.Windows.Forms
             /// <summary>
             ///  Gets the ListBox item default action.
             /// </summary>
-            public override string DefaultAction => _systemIAccessible.accDefaultAction[GetChildId()];
+            public override string DefaultAction =>
+                GetFromSystemIAccessible(() => _systemIAccessible.accDefaultAction[GetChildId()]);
 
             /// <summary>
             ///  Gets the help text.
             /// </summary>
-            public override string Help => _systemIAccessible.accHelp[GetChildId()];
+            public override string Help =>
+                GetFromSystemIAccessible(() => _systemIAccessible.accHelp[GetChildId()]);
 
             /// <summary>
             ///  Gets or sets the accessible name.
@@ -119,7 +121,10 @@ namespace System.Windows.Forms
             /// <summary>
             ///  Gets the accessible role.
             /// </summary>
-            public override AccessibleRole Role => (AccessibleRole)_systemIAccessible.get_accRole(GetChildId());
+            public override AccessibleRole Role =>
+                GetStructFromSystemIAccessible(
+                    () => (AccessibleRole)_systemIAccessible.get_accRole(GetChildId()),
+                    defaultReturnValue: AccessibleRole.None);
 
             /// <summary>
             ///  Gets the accessible state.
@@ -135,7 +140,11 @@ namespace System.Windows.Forms
                         return state |= AccessibleStates.Selected | AccessibleStates.Focused;
                     }
 
-                    return state |= (AccessibleStates)(_systemIAccessible.get_accState(GetChildId()));
+                    var systemIAccessibleState = GetStructFromSystemIAccessible(
+                        () => (AccessibleStates)_systemIAccessible.get_accState(GetChildId()),
+                        defaultReturnValue: AccessibleStates.None);
+
+                    return state |= systemIAccessibleState;
                 }
             }
 
@@ -303,6 +312,10 @@ namespace System.Windows.Forms
                 try
                 {
                     _systemIAccessible.accSelect((int)flags, GetChildId());
+                }
+                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
+                {
+                    // System IAccessible is not found.
                 }
                 catch (ArgumentException)
                 {

@@ -4602,13 +4602,8 @@ namespace System.Windows.Forms
             /// <summary>
             ///  Gets the ComboBox item default action.
             /// </summary>
-            public override string DefaultAction
-            {
-                get
-                {
-                    return _systemIAccessible.accDefaultAction[GetChildId()];
-                }
-            }
+            public override string DefaultAction =>
+                GetFromSystemIAccessible(() => _systemIAccessible.accDefaultAction[GetChildId()]);
 
             internal override UiaCore.IRawElementProviderFragment FragmentNavigate(UiaCore.NavigateDirection direction)
             {
@@ -4710,13 +4705,8 @@ namespace System.Windows.Forms
             /// <summary>
             ///  Gets the help text.
             /// </summary>
-            public override string Help
-            {
-                get
-                {
-                    return _systemIAccessible.accHelp[GetChildId()];
-                }
-            }
+            public override string Help =>
+                GetFromSystemIAccessible(() => _systemIAccessible.accHelp[GetChildId()]);
 
             /// <summary>
             ///  Indicates whether specified pattern is supported.
@@ -4755,13 +4745,10 @@ namespace System.Windows.Forms
             /// <summary>
             ///  Gets the accessible role.
             /// </summary>
-            public override AccessibleRole Role
-            {
-                get
-                {
-                    return (AccessibleRole)_systemIAccessible.get_accRole(GetChildId());
-                }
-            }
+            public override AccessibleRole Role =>
+                GetStructFromSystemIAccessible(
+                    () => (AccessibleRole)_systemIAccessible.get_accRole(GetChildId()),
+                    defaultReturnValue: AccessibleRole.None);
 
             /// <summary>
             ///  Gets the runtime ID.
@@ -4770,6 +4757,11 @@ namespace System.Windows.Forms
             {
                 get
                 {
+                    if (!_owningComboBox.IsHandleCreated)
+                    {
+                        return base.RuntimeId;
+                    }
+
                     var runtimeId = new int[4];
                     runtimeId[0] = RuntimeIDFirstItem;
                     runtimeId[1] = (int)(long)_owningComboBox.Handle;
@@ -4785,13 +4777,10 @@ namespace System.Windows.Forms
             /// <summary>
             ///  Gets the accessible state.
             /// </summary>
-            public override AccessibleStates State
-            {
-                get
-                {
-                    return (AccessibleStates)_systemIAccessible.get_accState(GetChildId());
-                }
-            }
+            public override AccessibleStates State =>
+                GetStructFromSystemIAccessible(
+                    () => (AccessibleStates)_systemIAccessible.get_accState(GetChildId()),
+                    AccessibleStates.None);
 
             internal override void SetFocus()
             {
@@ -5366,7 +5355,8 @@ namespace System.Windows.Forms
                 var systemIAccessible = GetSystemIAccessibleInternal();
                 if (systemIAccessible != null)
                 {
-                    object result = systemIAccessible.accHitTest((int)x, (int)y);
+                    object result = GetFromSystemIAccessible(
+                        () => systemIAccessible.accHitTest((int)x, (int)y));
                     if (result is int childId)
                     {
                         return GetChildFragment(childId - 1);
@@ -5787,7 +5777,8 @@ namespace System.Windows.Forms
                 set
                 {
                     var systemIAccessible = GetSystemIAccessibleInternal();
-                    systemIAccessible.set_accName(COMBOBOX_DROPDOWN_BUTTON_ACC_ITEM_INDEX, value);
+                    ExecuteWithSystemIAccessible(() =>
+                        systemIAccessible.set_accName(COMBOBOX_DROPDOWN_BUTTON_ACC_ITEM_INDEX, value));
                 }
             }
 
@@ -5798,8 +5789,13 @@ namespace System.Windows.Forms
             {
                 get
                 {
+                    int left = 0;
+                    int top = 0;
+                    int width = 0;
+                    int height = 0;
                     var systemIAccessible = GetSystemIAccessibleInternal();
-                    systemIAccessible.accLocation(out int left, out int top, out int width, out int height, COMBOBOX_DROPDOWN_BUTTON_ACC_ITEM_INDEX);
+                    ExecuteWithSystemIAccessible(() =>
+                        systemIAccessible.accLocation(out left, out top, out width, out height, COMBOBOX_DROPDOWN_BUTTON_ACC_ITEM_INDEX));
                     return new Rectangle(left, top, width, height);
                 }
             }
@@ -5812,7 +5808,8 @@ namespace System.Windows.Forms
                 get
                 {
                     var systemIAccessible = GetSystemIAccessibleInternal();
-                    return systemIAccessible.accDefaultAction[COMBOBOX_DROPDOWN_BUTTON_ACC_ITEM_INDEX];
+                    return GetFromSystemIAccessible(() =>
+                        systemIAccessible.accDefaultAction[COMBOBOX_DROPDOWN_BUTTON_ACC_ITEM_INDEX]);
                 }
             }
 
@@ -5908,7 +5905,8 @@ namespace System.Windows.Forms
                 get
                 {
                     var systemIAccessible = GetSystemIAccessibleInternal();
-                    return systemIAccessible.accHelp[COMBOBOX_DROPDOWN_BUTTON_ACC_ITEM_INDEX];
+                    return GetFromSystemIAccessible(() =>
+                        systemIAccessible.accHelp[COMBOBOX_DROPDOWN_BUTTON_ACC_ITEM_INDEX]);
                 }
             }
 
@@ -5920,7 +5918,8 @@ namespace System.Windows.Forms
                 get
                 {
                     var systemIAccessible = GetSystemIAccessibleInternal();
-                    return systemIAccessible.get_accKeyboardShortcut(COMBOBOX_DROPDOWN_BUTTON_ACC_ITEM_INDEX);
+                    return GetFromSystemIAccessible(() =>
+                        systemIAccessible.get_accKeyboardShortcut(COMBOBOX_DROPDOWN_BUTTON_ACC_ITEM_INDEX));
                 }
             }
 
@@ -5948,7 +5947,9 @@ namespace System.Windows.Forms
                 get
                 {
                     var systemIAccessible = GetSystemIAccessibleInternal();
-                    return (AccessibleRole)systemIAccessible.get_accRole(COMBOBOX_DROPDOWN_BUTTON_ACC_ITEM_INDEX);
+                    return GetStructFromSystemIAccessible(
+                        () => (AccessibleRole)systemIAccessible.get_accRole(COMBOBOX_DROPDOWN_BUTTON_ACC_ITEM_INDEX),
+                        defaultReturnValue: AccessibleRole.None);
                 }
             }
 
@@ -5981,7 +5982,9 @@ namespace System.Windows.Forms
                 get
                 {
                     var systemIAccessible = GetSystemIAccessibleInternal();
-                    return (AccessibleStates)systemIAccessible.get_accState(COMBOBOX_DROPDOWN_BUTTON_ACC_ITEM_INDEX);
+                    return GetStructFromSystemIAccessible(
+                        () => (AccessibleStates)systemIAccessible.get_accState(COMBOBOX_DROPDOWN_BUTTON_ACC_ITEM_INDEX),
+                        defaultReturnValue: AccessibleStates.None);
                 }
             }
         }
