@@ -97,14 +97,12 @@ namespace System.Windows.Forms
             /// <summary>
             ///  Gets the ListBox item default action.
             /// </summary>
-            public override string DefaultAction =>
-                GetFromSystemIAccessible(() => _systemIAccessible.accDefaultAction[GetChildId()]);
+            public override string DefaultAction => _systemIAccessible.accDefaultAction[GetChildId()];
 
             /// <summary>
             ///  Gets the help text.
             /// </summary>
-            public override string Help =>
-                GetFromSystemIAccessible(() => _systemIAccessible.accHelp[GetChildId()]);
+            public override string Help => _systemIAccessible.accHelp[GetChildId()];
 
             /// <summary>
             ///  Gets or sets the accessible name.
@@ -121,10 +119,7 @@ namespace System.Windows.Forms
             /// <summary>
             ///  Gets the accessible role.
             /// </summary>
-            public override AccessibleRole Role =>
-                GetStructFromSystemIAccessible(
-                    () => (AccessibleRole)_systemIAccessible.get_accRole(GetChildId()),
-                    defaultReturnValue: AccessibleRole.None);
+            public override AccessibleRole Role => (AccessibleRole)_systemIAccessible.get_accRole(GetChildId());
 
             /// <summary>
             ///  Gets the accessible state.
@@ -140,9 +135,7 @@ namespace System.Windows.Forms
                         return state |= AccessibleStates.Selected | AccessibleStates.Focused;
                     }
 
-                    var systemIAccessibleState = GetStructFromSystemIAccessible(
-                        () => (AccessibleStates)_systemIAccessible.get_accState(GetChildId()),
-                        defaultReturnValue: AccessibleStates.None);
+                    var systemIAccessibleState = (AccessibleStates)_systemIAccessible.get_accState(GetChildId());
 
                     return state |= systemIAccessibleState;
                 }
@@ -309,23 +302,13 @@ namespace System.Windows.Forms
 
             public override void Select(AccessibleSelection flags)
             {
-                try
-                {
-                    _systemIAccessible.accSelect((int)flags, GetChildId());
-                }
-                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                {
-                    // System IAccessible is not found.
-                }
-                catch (ArgumentException)
-                {
-                    // In Everett, the ListBox accessible children did not have any selection capability.
-                    // In Whidbey, they delegate the selection capability to OLEACC.
-                    // However, OLEACC does not deal w/ several Selection flags: ExtendSelection, AddSelection, RemoveSelection.
-                    // OLEACC instead throws an ArgumentException.
-                    // Since Whidbey API's should not throw an exception in places where Everett API's did not, we catch
-                    // the ArgumentException and fail silently.
-                }
+                // In Everett, the ListBox accessible children did not have any selection capability.
+                // In Whidbey, they delegate the selection capability to OLEACC.
+                // However, OLEACC does not deal w/ several Selection flags: ExtendSelection, AddSelection, RemoveSelection.
+                // OLEACC instead throws an ArgumentException.
+                // Since Whidbey API's should not throw an exception in places where Everett API's did not, we catch
+                // the ArgumentException and fail silently.
+                _systemIAccessible.accSelect((int)flags, GetChildId());
             }
         }
     }

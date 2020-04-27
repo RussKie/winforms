@@ -48,7 +48,7 @@ namespace System.Windows.Forms
         /// <summary>
         ///  Specifies the <see cref='IAccessible'/> interface used by this <see cref='AccessibleObject'/>.
         /// </summary>
-        private IAccessible? systemIAccessible = null;
+        private IAccessible systemIAccessible = new SystemIAccessibleDecorator(null /* don't throw while calling on null-value systemIAccessible */);
 
         /// <summary>
         ///  Specifies the <see cref='Oleaut32.IEnumVariant'/> used by this
@@ -78,7 +78,7 @@ namespace System.Windows.Forms
         // This constructor is used ONLY for wrapping system IAccessible objects
         private AccessibleObject(IAccessible? iAcc)
         {
-            systemIAccessible = iAcc;
+            systemIAccessible = new SystemIAccessibleDecorator(iAcc);
             systemWrapper = true;
         }
 
@@ -90,257 +90,73 @@ namespace System.Windows.Forms
             get
             {
                 // Use the system provided bounds
-                if (systemIAccessible != null)
-                {
-                    try
-                    {
-                        systemIAccessible.accLocation(out int left, out int top, out int width, out int height, NativeMethods.CHILDID_SELF);
-                        return new Rectangle(left, top, width, height);
-                    }
-                    catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                    {
-                    }
-                }
-
-                return Rectangle.Empty;
+                systemIAccessible.accLocation(out int left, out int top, out int width, out int height, NativeMethods.CHILDID_SELF);
+                return new Rectangle(left, top, width, height);
             }
         }
 
         /// <summary>
         ///  Gets a description of the default action for an object.
         /// </summary>
-        public virtual string? DefaultAction
-        {
-            get
-            {
-                if (systemIAccessible != null)
-                {
-                    try
-                    {
-                        return systemIAccessible.get_accDefaultAction(NativeMethods.CHILDID_SELF);
-                    }
-                    catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                    {
-                        // Not all objects provide a default action.
-                    }
-                }
-
-                return null;
-            }
-        }
+        public virtual string? DefaultAction =>
+            systemIAccessible.get_accDefaultAction(NativeMethods.CHILDID_SELF);
 
         /// <summary>
         ///  Gets a description of the object's visual appearance to the user.
         /// </summary>
-        public virtual string? Description
-        {
-            get
-            {
-                if (systemIAccessible != null)
-                {
-                    try
-                    {
-                        return systemIAccessible.get_accDescription(NativeMethods.CHILDID_SELF);
-                    }
-                    catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                    {
-                    }
-                }
+        public virtual string? Description =>
+            systemIAccessible.get_accDescription(NativeMethods.CHILDID_SELF);
 
-                return null;
-            }
-        }
-
-        private Oleaut32.IEnumVariant EnumVariant
-        {
-            get => enumVariant ?? (enumVariant = new EnumVariantObject(this));
-        }
+        private OleAut32.IEnumVariant EnumVariant =>
+            enumVariant ?? (enumVariant = new EnumVariantObject(this));
 
         /// <summary>
         ///  Gets a description of what the object does or how the object is used.
         /// </summary>
-        public virtual string? Help
-        {
-            get
-            {
-                if (systemIAccessible != null)
-                {
-                    try
-                    {
-                        return systemIAccessible.get_accHelp(NativeMethods.CHILDID_SELF);
-                    }
-                    catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                    {
-                    }
-                }
-
-                return null;
-            }
-        }
+        public virtual string? Help =>
+            systemIAccessible.get_accHelp(NativeMethods.CHILDID_SELF);
 
         /// <summary>
         ///  Gets the object shortcut key or access key for an accessible object.
         /// </summary>
-        public virtual string? KeyboardShortcut
-        {
-            get
-            {
-                if (systemIAccessible != null)
-                {
-                    try
-                    {
-                        return systemIAccessible.get_accKeyboardShortcut(NativeMethods.CHILDID_SELF);
-                    }
-                    catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                    {
-                    }
-                }
-
-                return null;
-            }
-        }
+        public virtual string? KeyboardShortcut =>
+            systemIAccessible.get_accKeyboardShortcut(NativeMethods.CHILDID_SELF);
 
         /// <summary>
         ///  Gets or sets the object name.
         /// </summary>
         public virtual string? Name
         {
-            // Does nothing by default
-            get
-            {
-                if (systemIAccessible != null)
-                {
-                    try
-                    {
-                        return systemIAccessible.get_accName(NativeMethods.CHILDID_SELF);
-                    }
-                    catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                    {
-                    }
-                }
-
-                return null;
-            }
-            set
-            {
-                if (systemIAccessible == null)
-                {
-                    return;
-                }
-
-                try
-                {
-                    systemIAccessible.set_accName(NativeMethods.CHILDID_SELF, value);
-                }
-                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                {
-                }
-            }
+            get => systemIAccessible.get_accName(NativeMethods.CHILDID_SELF);
+            set => systemIAccessible.set_accName(NativeMethods.CHILDID_SELF, value);
         }
 
         /// <summary>
         ///  When overridden in a derived class, gets or sets the parent of an
         ///  accessible object.
         /// </summary>
-        public virtual AccessibleObject? Parent
-        {
-            get
-            {
-                if (systemIAccessible != null)
-                {
-                    try
-                    {
-                        return WrapIAccessible(systemIAccessible.accParent);
-                    }
-                    catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                    {
-                    }
-                }
-
-                return null;
-            }
-        }
+        public virtual AccessibleObject? Parent =>
+            WrapIAccessible(systemIAccessible.accParent);
 
         /// <summary>
         ///  Gets the role of this accessible object.
         /// </summary>
-        public virtual AccessibleRole Role
-        {
-            get
-            {
-                if (systemIAccessible != null)
-                {
-                    try
-                    {
-                        return (AccessibleRole)systemIAccessible.get_accRole(NativeMethods.CHILDID_SELF);
-                    }
-                    catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                    {
-                    }
-                }
-
-                return AccessibleRole.None;
-            }
-        }
+        public virtual AccessibleRole Role =>
+            (AccessibleRole)systemIAccessible.get_accRole(NativeMethods.CHILDID_SELF);
 
         /// <summary>
         ///  Gets the state of this accessible object.
         /// </summary>
-        public virtual AccessibleStates State
-        {
-            get
-            {
-                if (systemIAccessible != null)
-                {
-                    try
-                    {
-                        return (AccessibleStates)systemIAccessible.get_accState(NativeMethods.CHILDID_SELF);
-                    }
-                    catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                    {
-                    }
-                }
-
-                return AccessibleStates.None;
-            }
-        }
+        public virtual AccessibleStates State =>
+            (AccessibleStates)systemIAccessible.get_accState(NativeMethods.CHILDID_SELF);
 
         /// <summary>
         ///  Gets or sets the value of an accessible object.
         /// </summary>
         public virtual string? Value
         {
-            // Does nothing by default
-            get
-            {
-                if (systemIAccessible != null)
-                {
-                    try
-                    {
-                        return systemIAccessible.get_accValue(NativeMethods.CHILDID_SELF);
-                    }
-                    catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                    {
-                    }
-                }
-
-                return string.Empty;
-            }
-            set
-            {
-                if (systemIAccessible == null)
-                {
-                    return;
-                }
-
-                try
-                {
-                    systemIAccessible.set_accValue(NativeMethods.CHILDID_SELF, value);
-                }
-                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                {
-                }
-            }
+            get => systemIAccessible.get_accValue(NativeMethods.CHILDID_SELF);
+            set => systemIAccessible.set_accValue(NativeMethods.CHILDID_SELF, value);
         }
 
         /// <summary>
@@ -418,13 +234,7 @@ namespace System.Windows.Forms
 
             if (systemIAccessible != null)
             {
-                try
-                {
-                    return WrapIAccessible(systemIAccessible.accFocus);
-                }
-                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                {
-                }
+                return WrapIAccessible(systemIAccessible.accFocus);
             }
 
             return null;
@@ -434,22 +244,8 @@ namespace System.Windows.Forms
         ///  Gets an identifier for a Help topic and the path to the Help file
         ///  associated with this accessible object.
         /// </summary>
-        public virtual int GetHelpTopic(out string? fileName)
-        {
-            if (systemIAccessible != null)
-            {
-                try
-                {
-                    return systemIAccessible.get_accHelpTopic(out fileName, NativeMethods.CHILDID_SELF);
-                }
-                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                {
-                }
-            }
-
-            fileName = null;
-            return -1;
-        }
+        public virtual int GetHelpTopic(out string fileName) =>
+            systemIAccessible.get_accHelpTopic(out fileName, NativeMethods.CHILDID_SELF);
 
         /// <summary>
         ///  When overridden in a derived class, gets the currently selected child.
@@ -480,13 +276,7 @@ namespace System.Windows.Forms
 
             if (systemIAccessible != null)
             {
-                try
-                {
-                    return WrapIAccessible(systemIAccessible.accSelection);
-                }
-                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                {
-                }
+                return WrapIAccessible(systemIAccessible.accSelection);
             }
 
             return null;
@@ -516,13 +306,7 @@ namespace System.Windows.Forms
 
             if (systemIAccessible != null)
             {
-                try
-                {
-                    return WrapIAccessible(systemIAccessible.accHitTest(x, y));
-                }
-                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                {
-                }
+                return WrapIAccessible(systemIAccessible.accHitTest(x, y));
             }
 
             if (Bounds.Contains(x, y))
@@ -616,78 +400,6 @@ namespace System.Windows.Forms
                     default:
                         return !string.IsNullOrEmpty(DefaultAction);
                 }
-            }
-        }
-
-        internal TReturn GetFromSystemIAccessible<TReturn>(Func<TReturn> getFunction) where TReturn : class
-        {
-            if (systemIAccessible == null)
-            {
-                return null;
-            }
-
-            try
-            {
-                return getFunction();
-            }
-            catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-            {
-                // System IAccessible is not found.
-            }
-            catch (ArgumentException)
-            {
-                // Argument exception can be thrown in case main system IAccessible cannot be gotten
-                // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
-            }
-
-            return null;
-        }
-
-        internal TReturn GetStructFromSystemIAccessible<TReturn>(
-            Func<TReturn> getFunction,
-            TReturn defaultReturnValue = default(TReturn)) where TReturn : struct
-        {
-            if (systemIAccessible == null)
-            {
-                return defaultReturnValue;
-            }
-
-            try
-            {
-                return getFunction();
-            }
-            catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-            {
-                // System IAccessible is not found.
-            }
-            catch (ArgumentException)
-            {
-                // Argument exception can be thrown in case main system IAccessible cannot be gotten
-                // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
-            }
-
-            return defaultReturnValue;
-        }
-
-        internal void ExecuteWithSystemIAccessible(Action function)
-        {
-            if (systemIAccessible == null)
-            {
-                return;
-            }
-
-            try
-            {
-                function();
-            }
-            catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-            {
-                // System IAccessible is not found.
-            }
-            catch (ArgumentException)
-            {
-                // Argument exception can be thrown in case main system IAccessible cannot be gotten
-                // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
             }
         }
 
@@ -1004,22 +716,7 @@ namespace System.Windows.Forms
                 }
             }
 
-            if (systemIAccessible != null)
-            {
-                try
-                {
-                    systemIAccessible.accDoDefaultAction(childID);
-                }
-                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                {
-                    // Not all objects provide a default action.
-                }
-                catch (ArgumentException)
-                {
-                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
-                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
-                }
-            }
+            systemIAccessible.accDoDefaultAction(childID);
         }
 
         /// <summary>
@@ -1041,13 +738,7 @@ namespace System.Windows.Forms
 
             if (systemIAccessible != null)
             {
-                try
-                {
-                    return systemIAccessible.accHitTest(xLeft, yTop);
-                }
-                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                {
-                }
+                return systemIAccessible.accHitTest(xLeft, yTop);
             }
 
             return null;
@@ -1109,26 +800,7 @@ namespace System.Windows.Forms
 
             if (systemIAccessible != null)
             {
-                try
-                {
-                    systemIAccessible.accLocation(out pxLeft, out pyTop, out pcxWidth, out pcyHeight, childID);
-
-                    Debug.WriteLineIf(CompModSwitches.MSAA.TraceInfo, "AccessibleObject.AccLocation: Setting " +
-                        pxLeft.ToString(CultureInfo.InvariantCulture) + ", " +
-                        pyTop.ToString(CultureInfo.InvariantCulture) + ", " +
-                        pcxWidth.ToString(CultureInfo.InvariantCulture) + ", " +
-                        pcyHeight.ToString(CultureInfo.InvariantCulture));
-                }
-                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                {
-                }
-                catch (ArgumentException)
-                {
-                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
-                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
-                }
-
-                return;
+                systemIAccessible.accLocation(out pxLeft, out pyTop, out pcxWidth, out pcyHeight, childID);
             }
         }
 
@@ -1164,23 +836,12 @@ namespace System.Windows.Forms
 
             if (systemIAccessible != null)
             {
-                try
+                if (!SysNavigate(navDir, childID, out object retObject))
                 {
-                    if (!SysNavigate(navDir, childID, out object? retObject))
-                    {
-                        return systemIAccessible.accNavigate(navDir, childID);
-                    }
+                    return systemIAccessible.accNavigate(navDir, childID);
+                }
 
-                    return retObject;
-                }
-                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                {
-                }
-                catch (ArgumentException)
-                {
-                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
-                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
-                }
+                return retObject;
             }
 
             return null;
@@ -1216,20 +877,7 @@ namespace System.Windows.Forms
 
             if (systemIAccessible != null)
             {
-                try
-                {
-                    systemIAccessible.accSelect(flagsSelect, childID);
-                }
-                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                {
-                }
-                catch (ArgumentException)
-                {
-                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
-                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
-                }
-
-                return;
+                systemIAccessible.accSelect(flagsSelect, childID);
             }
         }
 
@@ -1241,15 +889,7 @@ namespace System.Windows.Forms
             // By default, just does the system default action if available
             if (systemIAccessible != null)
             {
-                try
-                {
-                    systemIAccessible.accDoDefaultAction(0);
-                }
-                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                {
-                    // Not all objects provide a default action.
-                }
-                return;
+                systemIAccessible.accDoDefaultAction(0);
             }
         }
 
@@ -1352,19 +992,7 @@ namespace System.Windows.Forms
 
             if (systemIAccessible != null)
             {
-                try
-                {
-                    return systemIAccessible.get_accDefaultAction(childID);
-                }
-                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                {
-                    // Not all objects provide a default action.
-                }
-                catch (ArgumentException)
-                {
-                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
-                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
-                }
+                return systemIAccessible.get_accDefaultAction(childID);
             }
 
             return null;
@@ -1395,18 +1023,7 @@ namespace System.Windows.Forms
 
             if (systemIAccessible != null)
             {
-                try
-                {
-                    return systemIAccessible.get_accDescription(childID);
-                }
-                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                {
-                }
-                catch (ArgumentException)
-                {
-                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
-                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
-                }
+                return systemIAccessible.get_accDescription(childID);
             }
 
             return null;
@@ -1451,13 +1068,7 @@ namespace System.Windows.Forms
 
                 if (systemIAccessible != null)
                 {
-                    try
-                    {
-                        return systemIAccessible.accFocus;
-                    }
-                    catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                    {
-                    }
+                    return systemIAccessible.accFocus;
                 }
 
                 return null;
@@ -1488,18 +1099,7 @@ namespace System.Windows.Forms
 
             if (systemIAccessible != null)
             {
-                try
-                {
-                    return systemIAccessible.get_accHelp(childID);
-                }
-                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                {
-                }
-                catch (ArgumentException)
-                {
-                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
-                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
-                }
+                return systemIAccessible.get_accHelp(childID);
             }
 
             return null;
@@ -1529,18 +1129,7 @@ namespace System.Windows.Forms
 
             if (systemIAccessible != null)
             {
-                try
-                {
-                    return systemIAccessible.get_accHelpTopic(out pszHelpFile, childID);
-                }
-                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                {
-                }
-                catch (ArgumentException)
-                {
-                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
-                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
-                }
+                return systemIAccessible.get_accHelpTopic(out pszHelpFile, childID);
             }
 
             pszHelpFile = null;
@@ -1576,18 +1165,7 @@ namespace System.Windows.Forms
 
             if (systemIAccessible != null)
             {
-                try
-                {
-                    return systemIAccessible.get_accKeyboardShortcut(childID);
-                }
-                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                {
-                }
-                catch (ArgumentException)
-                {
-                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
-                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
-                }
+                return systemIAccessible.get_accKeyboardShortcut(childID);
             }
 
             return null;
@@ -1629,18 +1207,7 @@ namespace System.Windows.Forms
             {
                 string? retval = null;
 
-                try
-                {
-                    retval = systemIAccessible.get_accName(childID);
-                }
-                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                {
-                }
-                catch (ArgumentException)
-                {
-                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
-                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
-                }
+                retval = systemIAccessible.get_accName(childID);
 
                 if (IsClientObject)
                 {
@@ -1710,20 +1277,7 @@ namespace System.Windows.Forms
                 return null;
             }
 
-            try
-            {
-                return systemIAccessible.get_accRole(childID);
-            }
-            catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-            {
-            }
-            catch (ArgumentException)
-            {
-                // Argument exception can be thrown in case main system IAccessible cannot be gotten
-                // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
-            }
-
-            return AccessibleRole.None;
+            return systemIAccessible.get_accRole(childID);
         }
 
         /// <summary>
@@ -1747,13 +1301,7 @@ namespace System.Windows.Forms
 
                 if (systemIAccessible != null)
                 {
-                    try
-                    {
-                        return systemIAccessible.accSelection;
-                    }
-                    catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                    {
-                    }
+                    return systemIAccessible.accSelection;
                 }
 
                 return null;
@@ -1786,20 +1334,7 @@ namespace System.Windows.Forms
                 }
             }
 
-            try
-            {
-                return systemIAccessible?.get_accState(childID);
-            }
-            catch (COMException e) when(e.ErrorCode == (int) HRESULT.DISP_E_MEMBERNOTFOUND)
-            {
-            }
-            catch (ArgumentException)
-            {
-                // Argument exception can be thrown in case main system IAccessible cannot be gotten
-                // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
-            }
-
-            return AccessibleStates.None;
+            return systemIAccessible?.get_accState(childID);
         }
 
         /// <summary>
@@ -1827,18 +1362,7 @@ namespace System.Windows.Forms
 
             if (systemIAccessible != null)
             {
-                try
-                {
-                    return systemIAccessible.get_accValue(childID);
-                }
-                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                {
-                }
-                catch (ArgumentException)
-                {
-                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
-                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
-                }
+                return systemIAccessible.get_accValue(childID);
             }
 
             return null;
@@ -1870,18 +1394,7 @@ namespace System.Windows.Forms
                 }
             }
 
-            try
-            {
-                systemIAccessible?.set_accName(childID, newName);
-            }
-            catch (COMException e) when(e.ErrorCode == (int) HRESULT.DISP_E_MEMBERNOTFOUND)
-            {
-            }
-            catch (ArgumentException)
-            {
-                // Argument exception can be thrown in case main system IAccessible cannot be gotten
-                // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
-            }
+            systemIAccessible?.set_accName(childID, newName);
         }
 
         /// <summary>
@@ -1910,21 +1423,7 @@ namespace System.Windows.Forms
                 }
             }
 
-            if (systemIAccessible != null)
-            {
-                try
-                {
-                    systemIAccessible.set_accValue(childID, newValue);
-                }
-                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                {
-                }
-                catch (ArgumentException)
-                {
-                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
-                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
-                }
-            }
+            systemIAccessible?.set_accValue(childID, newValue);
         }
 
         /// <summary>
@@ -2047,18 +1546,12 @@ namespace System.Windows.Forms
 
             if (systemIAccessible != null)
             {
-                try
+                if (!SysNavigate((int)navdir, NativeMethods.CHILDID_SELF, out object retObject))
                 {
-                    if (!SysNavigate((int)navdir, NativeMethods.CHILDID_SELF, out object? retObject))
-                    {
-                        retObject = systemIAccessible.accNavigate((int)navdir, NativeMethods.CHILDID_SELF);
-                    }
+                    retObject = systemIAccessible.accNavigate((int)navdir, NativeMethods.CHILDID_SELF);
+                }
 
-                    return WrapIAccessible(retObject);
-                }
-                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                {
-                }
+                return WrapIAccessible(retObject);
             }
 
             return null;
@@ -2069,18 +1562,7 @@ namespace System.Windows.Forms
         /// </summary>
         public virtual void Select(AccessibleSelection flags)
         {
-            // By default, do the system behavior
-            if (systemIAccessible != null)
-            {
-                try
-                {
-                    systemIAccessible.accSelect((int)flags, 0);
-                }
-                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                {
-                    // Not all objects provide the select function.
-                }
-            }
+            systemIAccessible.accSelect((int)flags, 0);
         }
 
         private object? AsVariant(AccessibleObject? obj)
@@ -2161,7 +1643,7 @@ namespace System.Windows.Forms
 
             if (acc != null || en != null)
             {
-                systemIAccessible = acc as IAccessible;
+                systemIAccessible = new SystemIAccessibleDecorator((IAccessible)acc);
                 systemIEnumVariant = en as Oleaut32.IEnumVariant;
                 systemIOleWindow = acc as Ole32.IOleWindow;
             }
@@ -2481,6 +1963,231 @@ namespace System.Windows.Forms
         internal virtual void ScrollIntoView()
         {
             Debug.Fail($"{nameof(ScrollIntoView)}() is not overriden");
+        }
+
+        private class SystemIAccessibleDecorator : IAccessible
+        {
+            private IAccessible _systemIAccessible;
+
+            public SystemIAccessibleDecorator(IAccessible systemIAccessible)
+            {
+                _systemIAccessible = systemIAccessible;
+            }
+
+            public void accSelect(int flagsSelect, object varChild)
+            {
+                SafeExecute(() => _systemIAccessible.accSelect(flagsSelect, varChild));
+            }
+
+            public void accLocation(out int pxLeft, out int pyTop, out int pcxWidth, out int pcyHeight, object varChild)
+            {
+                int left = 0;
+                int top = 0;
+                int width = 0;
+                int height = 0;
+
+                SafeExecute(() =>
+                {
+                    _systemIAccessible.accLocation(out left, out top, out width, out height, varChild);
+
+                    Debug.WriteLineIf(CompModSwitches.MSAA.TraceInfo, "AccessibleObject.AccLocation: Setting " +
+                        left.ToString(CultureInfo.InvariantCulture) + ", " +
+                        top.ToString(CultureInfo.InvariantCulture) + ", " +
+                        width.ToString(CultureInfo.InvariantCulture) + ", " +
+                        height.ToString(CultureInfo.InvariantCulture));
+                });
+
+                pxLeft = left;
+                pyTop = top;
+                pcxWidth = width;
+                pcyHeight = height;
+            }
+
+            public object accNavigate(int navDir, object varStart)
+            {
+                return SafeGetValue(() => _systemIAccessible.accNavigate(navDir, varStart));
+            }
+
+            public object accHitTest(int xLeft, int yTop)
+            {
+                return SafeGetValue(() => _systemIAccessible.accHitTest(xLeft, yTop));
+            }
+
+            public void accDoDefaultAction(object varChild)
+            {
+                SafeExecute(() => _systemIAccessible.accDoDefaultAction(varChild));
+            }
+
+            public object accParent => SafeGetValue(() => _systemIAccessible.accParent);
+
+            public int accChildCount => SafeGetStructValue(() => _systemIAccessible.accChildCount);
+
+            public object get_accChild(object childID) =>
+                SafeGetValue(() => _systemIAccessible.get_accChild(childID));
+
+            public string get_accName(object childID)
+            {
+                return SafeGetValue(() => _systemIAccessible.get_accName(childID));
+            }
+
+            public void set_accName(object childID, string newName)
+            {
+                SafeExecute(() => _systemIAccessible.set_accName(childID, newName));
+            }
+
+            public string accName
+            {
+                get => SafeGetValue(() => _systemIAccessible.accName);
+                set => SafeExecute(() =>
+                {
+                    _systemIAccessible.accName = value;
+                });
+            }
+
+            public string accValue
+            {
+                get => SafeGetValue(() => _systemIAccessible.accValue);
+                set => SafeExecute(() =>
+                {
+                    _systemIAccessible.accValue = value;
+                });
+            }
+
+            public string get_accValue(object childID)
+            {
+                return SafeGetValue(() => _systemIAccessible.get_accValue(childID));
+            }
+
+            public void set_accValue(object childID, string newValue)
+            {
+                SafeExecute(() => _systemIAccessible.set_accValue(childID, newValue));
+            }
+
+            public string accDescription => SafeGetValue(() => _systemIAccessible.accDescription);
+
+            public string get_accDescription(object childID)
+            {
+                return SafeGetValue(() => _systemIAccessible.get_accDescription(childID));
+            }
+
+            public object accRole => SafeGetValue(() => _systemIAccessible.accRole);
+
+            public object get_accRole(object childID)
+            {
+                return SafeGetValue(() => _systemIAccessible.get_accRole(childID));
+            }
+
+            public object accState => SafeGetValue(() => _systemIAccessible.accState);
+
+            public object get_accState(object childID)
+            {
+                return SafeGetValue(() => _systemIAccessible.get_accState(childID));
+            }
+
+            public string accHelp => SafeGetValue(() => _systemIAccessible.accHelp);
+
+            public string get_accHelp(object childID)
+            {
+                return SafeGetValue(() => _systemIAccessible.get_accHelp(childID));
+            }
+
+            public int get_accHelpTopic(out string pszHelpFile, object childID)
+            {
+                string helpFile = null;
+                int result = SafeGetStructValue(() => _systemIAccessible.get_accHelpTopic(out helpFile, childID), -1);
+                pszHelpFile = helpFile;
+                return result;
+            }
+
+            public string accKeyboardShortcut => SafeGetValue(() => _systemIAccessible.accKeyboardShortcut);
+
+            public string get_accKeyboardShortcut(object childID)
+            {
+                return SafeGetValue(() => _systemIAccessible.get_accKeyboardShortcut(childID));
+            }
+
+            public object accFocus => SafeGetValue(() => _systemIAccessible.accFocus);
+
+            public object accSelection => SafeGetValue(() => _systemIAccessible.accSelection);
+
+            public string accDefaultAction => SafeGetValue(() => _systemIAccessible.accDefaultAction);
+
+            public string get_accDefaultAction(object childID)
+            {
+                return SafeGetValue(() => _systemIAccessible.get_accDefaultAction(childID));
+            }
+
+            private protected TReturn SafeGetValue<TReturn>(Func<TReturn> getFunction) where TReturn : class
+            {
+                if (_systemIAccessible == null || getFunction == null)
+                {
+                    return null;
+                }
+
+                try
+                {
+                    return getFunction();
+                }
+                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
+                {
+                    // System IAccessible is not found.
+                }
+                catch (ArgumentException)
+                {
+                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
+                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
+                }
+
+                return null;
+            }
+
+            private TReturn SafeGetStructValue<TReturn>(
+                Func<TReturn> func,
+                TReturn defaultReturnValue = default(TReturn)) where TReturn : struct
+            {
+                if (_systemIAccessible == null || func == null)
+                {
+                    return defaultReturnValue;
+                }
+
+                try
+                {
+                    return func();
+                }
+                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
+                {
+                    // System IAccessible is not found.
+                }
+                catch (ArgumentException)
+                {
+                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
+                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
+                }
+
+                return defaultReturnValue;
+            }
+
+            internal void SafeExecute(Action action)
+            {
+                if (_systemIAccessible == null || action == null)
+                {
+                    return;
+                }
+
+                try
+                {
+                    action();
+                }
+                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
+                {
+                    // System IAccessible is not found.
+                }
+                catch (ArgumentException)
+                {
+                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
+                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
+                }
+            }
         }
     }
 }
