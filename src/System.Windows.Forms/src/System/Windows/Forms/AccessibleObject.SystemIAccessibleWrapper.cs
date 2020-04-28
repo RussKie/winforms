@@ -15,6 +15,12 @@ namespace System.Windows.Forms
 {
     public partial class AccessibleObject
     {
+        /// <summary>
+        /// This is a helper class that is used to wrap system IAccessible object
+        /// and to perform calls to system accessibility methods with check wrapped
+        /// IAccessible object for null and with COM exception handling to prevent
+        /// application crash in case system IAccessible object is not found.
+        /// </summary>
         private class SystemIAccessibleWrapper : IAccessible
         {
             private IAccessible _systemIAccessible;
