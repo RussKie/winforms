@@ -48,7 +48,7 @@ namespace System.Windows.Forms
         /// <summary>
         ///  Specifies the <see cref='IAccessible'/> interface used by this <see cref='AccessibleObject'/>.
         /// </summary>
-        private IAccessible systemIAccessible = new SystemIAccessibleDecorator(null /* don't throw while calling on null-value systemIAccessible */);
+        private IAccessible systemIAccessible = new SystemIAccessibleWrapper(null /* don't throw while calling on null-value systemIAccessible */);
 
         /// <summary>
         ///  Specifies the <see cref='Oleaut32.IEnumVariant'/> used by this
@@ -78,7 +78,7 @@ namespace System.Windows.Forms
         // This constructor is used ONLY for wrapping system IAccessible objects
         private AccessibleObject(IAccessible? iAcc)
         {
-            systemIAccessible = new SystemIAccessibleDecorator(iAcc);
+            systemIAccessible = new SystemIAccessibleWrapper(iAcc);
             systemWrapper = true;
         }
 
@@ -1643,7 +1643,7 @@ namespace System.Windows.Forms
 
             if (acc != null || en != null)
             {
-                systemIAccessible = new SystemIAccessibleDecorator((IAccessible)acc);
+                systemIAccessible = new SystemIAccessibleWrapper((IAccessible)acc);
                 systemIEnumVariant = en as Oleaut32.IEnumVariant;
                 systemIOleWindow = acc as Ole32.IOleWindow;
             }
@@ -1965,229 +1965,5 @@ namespace System.Windows.Forms
             Debug.Fail($"{nameof(ScrollIntoView)}() is not overriden");
         }
 
-        private class SystemIAccessibleDecorator : IAccessible
-        {
-            private IAccessible _systemIAccessible;
-
-            public SystemIAccessibleDecorator(IAccessible systemIAccessible)
-            {
-                _systemIAccessible = systemIAccessible;
-            }
-
-            public void accSelect(int flagsSelect, object varChild)
-            {
-                SafeExecute(() => _systemIAccessible.accSelect(flagsSelect, varChild));
-            }
-
-            public void accLocation(out int pxLeft, out int pyTop, out int pcxWidth, out int pcyHeight, object varChild)
-            {
-                int left = 0;
-                int top = 0;
-                int width = 0;
-                int height = 0;
-
-                SafeExecute(() =>
-                {
-                    _systemIAccessible.accLocation(out left, out top, out width, out height, varChild);
-
-                    Debug.WriteLineIf(CompModSwitches.MSAA.TraceInfo, "AccessibleObject.AccLocation: Setting " +
-                        left.ToString(CultureInfo.InvariantCulture) + ", " +
-                        top.ToString(CultureInfo.InvariantCulture) + ", " +
-                        width.ToString(CultureInfo.InvariantCulture) + ", " +
-                        height.ToString(CultureInfo.InvariantCulture));
-                });
-
-                pxLeft = left;
-                pyTop = top;
-                pcxWidth = width;
-                pcyHeight = height;
-            }
-
-            public object accNavigate(int navDir, object varStart)
-            {
-                return SafeGetValue(() => _systemIAccessible.accNavigate(navDir, varStart));
-            }
-
-            public object accHitTest(int xLeft, int yTop)
-            {
-                return SafeGetValue(() => _systemIAccessible.accHitTest(xLeft, yTop));
-            }
-
-            public void accDoDefaultAction(object varChild)
-            {
-                SafeExecute(() => _systemIAccessible.accDoDefaultAction(varChild));
-            }
-
-            public object accParent => SafeGetValue(() => _systemIAccessible.accParent);
-
-            public int accChildCount => SafeGetStructValue(() => _systemIAccessible.accChildCount);
-
-            public object get_accChild(object childID) =>
-                SafeGetValue(() => _systemIAccessible.get_accChild(childID));
-
-            public string get_accName(object childID)
-            {
-                return SafeGetValue(() => _systemIAccessible.get_accName(childID));
-            }
-
-            public void set_accName(object childID, string newName)
-            {
-                SafeExecute(() => _systemIAccessible.set_accName(childID, newName));
-            }
-
-            public string accName
-            {
-                get => SafeGetValue(() => _systemIAccessible.accName);
-                set => SafeExecute(() =>
-                {
-                    _systemIAccessible.accName = value;
-                });
-            }
-
-            public string accValue
-            {
-                get => SafeGetValue(() => _systemIAccessible.accValue);
-                set => SafeExecute(() =>
-                {
-                    _systemIAccessible.accValue = value;
-                });
-            }
-
-            public string get_accValue(object childID)
-            {
-                return SafeGetValue(() => _systemIAccessible.get_accValue(childID));
-            }
-
-            public void set_accValue(object childID, string newValue)
-            {
-                SafeExecute(() => _systemIAccessible.set_accValue(childID, newValue));
-            }
-
-            public string accDescription => SafeGetValue(() => _systemIAccessible.accDescription);
-
-            public string get_accDescription(object childID)
-            {
-                return SafeGetValue(() => _systemIAccessible.get_accDescription(childID));
-            }
-
-            public object accRole => SafeGetValue(() => _systemIAccessible.accRole);
-
-            public object get_accRole(object childID)
-            {
-                return SafeGetValue(() => _systemIAccessible.get_accRole(childID));
-            }
-
-            public object accState => SafeGetValue(() => _systemIAccessible.accState);
-
-            public object get_accState(object childID)
-            {
-                return SafeGetValue(() => _systemIAccessible.get_accState(childID));
-            }
-
-            public string accHelp => SafeGetValue(() => _systemIAccessible.accHelp);
-
-            public string get_accHelp(object childID)
-            {
-                return SafeGetValue(() => _systemIAccessible.get_accHelp(childID));
-            }
-
-            public int get_accHelpTopic(out string pszHelpFile, object childID)
-            {
-                string helpFile = null;
-                int result = SafeGetStructValue(() => _systemIAccessible.get_accHelpTopic(out helpFile, childID), -1);
-                pszHelpFile = helpFile;
-                return result;
-            }
-
-            public string accKeyboardShortcut => SafeGetValue(() => _systemIAccessible.accKeyboardShortcut);
-
-            public string get_accKeyboardShortcut(object childID)
-            {
-                return SafeGetValue(() => _systemIAccessible.get_accKeyboardShortcut(childID));
-            }
-
-            public object accFocus => SafeGetValue(() => _systemIAccessible.accFocus);
-
-            public object accSelection => SafeGetValue(() => _systemIAccessible.accSelection);
-
-            public string accDefaultAction => SafeGetValue(() => _systemIAccessible.accDefaultAction);
-
-            public string get_accDefaultAction(object childID)
-            {
-                return SafeGetValue(() => _systemIAccessible.get_accDefaultAction(childID));
-            }
-
-            private protected TReturn SafeGetValue<TReturn>(Func<TReturn> getFunction) where TReturn : class
-            {
-                if (_systemIAccessible == null || getFunction == null)
-                {
-                    return null;
-                }
-
-                try
-                {
-                    return getFunction();
-                }
-                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                {
-                    // System IAccessible is not found.
-                }
-                catch (ArgumentException)
-                {
-                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
-                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
-                }
-
-                return null;
-            }
-
-            private TReturn SafeGetStructValue<TReturn>(
-                Func<TReturn> func,
-                TReturn defaultReturnValue = default(TReturn)) where TReturn : struct
-            {
-                if (_systemIAccessible == null || func == null)
-                {
-                    return defaultReturnValue;
-                }
-
-                try
-                {
-                    return func();
-                }
-                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                {
-                    // System IAccessible is not found.
-                }
-                catch (ArgumentException)
-                {
-                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
-                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
-                }
-
-                return defaultReturnValue;
-            }
-
-            internal void SafeExecute(Action action)
-            {
-                if (_systemIAccessible == null || action == null)
-                {
-                    return;
-                }
-
-                try
-                {
-                    action();
-                }
-                catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
-                {
-                    // System IAccessible is not found.
-                }
-                catch (ArgumentException)
-                {
-                    // Argument exception can be thrown in case main system IAccessible cannot be gotten
-                    // with MEMBERNOTFOUND and then all children (ChildId > 0) also cannot be gotten.
-                }
-            }
-        }
     }
 }
