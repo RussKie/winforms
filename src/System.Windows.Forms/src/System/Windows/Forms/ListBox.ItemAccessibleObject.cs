@@ -119,7 +119,16 @@ namespace System.Windows.Forms
             /// <summary>
             ///  Gets the accessible role.
             /// </summary>
-            public override AccessibleRole Role => (AccessibleRole)_systemIAccessible.get_accRole(GetChildId());
+            public override AccessibleRole Role
+            {
+                get
+                {
+                    var accRole = _systemIAccessible.get_accRole(GetChildId());
+                    return accRole != null
+                        ? (AccessibleRole)accRole
+                        : AccessibleRole.None;
+                }
+            }
 
             /// <summary>
             ///  Gets the accessible state.
@@ -135,9 +144,13 @@ namespace System.Windows.Forms
                         return state |= AccessibleStates.Selected | AccessibleStates.Focused;
                     }
 
-                    var systemIAccessibleState = (AccessibleStates)_systemIAccessible.get_accState(GetChildId());
+                    var systemIAccessibleState = _systemIAccessible.get_accState(GetChildId());
+                    if (systemIAccessibleState != null)
+                    {
+                        return state |= (AccessibleStates)systemIAccessibleState;
+                    }
 
-                    return state |= systemIAccessibleState;
+                    return state;
                 }
             }
 

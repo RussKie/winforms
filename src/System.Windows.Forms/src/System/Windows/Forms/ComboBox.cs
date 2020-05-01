@@ -4743,7 +4743,16 @@ namespace System.Windows.Forms
             /// <summary>
             ///  Gets the accessible role.
             /// </summary>
-            public override AccessibleRole Role => (AccessibleRole)_systemIAccessible.get_accRole(GetChildId());
+            public override AccessibleRole Role
+            {
+                get
+                {
+                    var accRole = _systemIAccessible.get_accRole(GetChildId());
+                    return accRole != null
+                        ? (AccessibleRole)accRole
+                        : AccessibleRole.None;
+                }
+            }
 
             /// <summary>
             ///  Gets the runtime ID.
@@ -4772,7 +4781,16 @@ namespace System.Windows.Forms
             /// <summary>
             ///  Gets the accessible state.
             /// </summary>
-            public override AccessibleStates State => (AccessibleStates)_systemIAccessible.get_accState(GetChildId());
+            public override AccessibleStates State
+            {
+                get
+                {
+                    var accState = _systemIAccessible.get_accState(GetChildId());
+                    return accState != null
+                        ? (AccessibleStates)accState
+                        : AccessibleStates.None;
+                }
+            }
 
             internal override void SetFocus()
             {
@@ -5933,7 +5951,10 @@ namespace System.Windows.Forms
                 get
                 {
                     var systemIAccessible = GetSystemIAccessibleInternal();
-                    return (AccessibleRole)systemIAccessible.get_accRole(COMBOBOX_DROPDOWN_BUTTON_ACC_ITEM_INDEX);
+                    var accRole = systemIAccessible.get_accRole(COMBOBOX_DROPDOWN_BUTTON_ACC_ITEM_INDEX);
+                    return accRole != null
+                        ? (AccessibleRole)accRole
+                        : AccessibleRole.None;
                 }
             }
 
@@ -5966,7 +5987,10 @@ namespace System.Windows.Forms
                 get
                 {
                     var systemIAccessible = GetSystemIAccessibleInternal();
-                    return (AccessibleStates)systemIAccessible.get_accState(COMBOBOX_DROPDOWN_BUTTON_ACC_ITEM_INDEX);
+                    var accState = systemIAccessible.get_accState(COMBOBOX_DROPDOWN_BUTTON_ACC_ITEM_INDEX);
+                    return accState != null
+                        ? (AccessibleStates)accState
+                        : AccessibleStates.None;
                 }
             }
         }

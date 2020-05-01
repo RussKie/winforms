@@ -141,14 +141,30 @@ namespace System.Windows.Forms
         /// <summary>
         ///  Gets the role of this accessible object.
         /// </summary>
-        public virtual AccessibleRole Role =>
-            (AccessibleRole)systemIAccessible.get_accRole(NativeMethods.CHILDID_SELF);
+        public virtual AccessibleRole Role
+        {
+            get
+            {
+                var accRole = systemIAccessible.get_accRole(NativeMethods.CHILDID_SELF);
+                return accRole != null
+                    ? (AccessibleRole)accRole
+                    : AccessibleRole.None;
+            }
+        }
 
         /// <summary>
         ///  Gets the state of this accessible object.
         /// </summary>
-        public virtual AccessibleStates State =>
-            (AccessibleStates)systemIAccessible.get_accState(NativeMethods.CHILDID_SELF);
+        public virtual AccessibleStates State
+        {
+            get
+            {
+                var accState = systemIAccessible.get_accState(NativeMethods.CHILDID_SELF);
+                return accState != null
+                    ? (AccessibleStates)accState
+                    : AccessibleStates.None;
+            }
+        }
 
         /// <summary>
         ///  Gets or sets the value of an accessible object.
