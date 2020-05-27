@@ -853,7 +853,7 @@ namespace System.Windows.Forms
 
             if (systemIAccessible != null)
             {
-                if (!SysNavigate(navDir, childID, out object retObject))
+                if (!SysNavigate(navDir, childID, out object? retObject))
                 {
                     return systemIAccessible.accNavigate(navDir, childID);
                 }
@@ -1563,7 +1563,7 @@ namespace System.Windows.Forms
 
             if (systemIAccessible != null)
             {
-                if (!SysNavigate((int)navdir, NativeMethods.CHILDID_SELF, out object retObject))
+                if (!SysNavigate((int)navdir, NativeMethods.CHILDID_SELF, out object? retObject))
                 {
                     retObject = systemIAccessible.accNavigate((int)navdir, NativeMethods.CHILDID_SELF);
                 }
@@ -1660,7 +1660,7 @@ namespace System.Windows.Forms
 
             if (acc != null || en != null)
             {
-                systemIAccessible = new SystemIAccessibleWrapper((IAccessible)acc);
+                systemIAccessible = new SystemIAccessibleWrapper((IAccessible?)acc);
                 systemIEnumVariant = en as Oleaut32.IEnumVariant;
                 systemIOleWindow = acc as Ole32.IOleWindow;
             }
@@ -1981,6 +1981,5 @@ namespace System.Windows.Forms
         {
             Debug.Fail($"{nameof(ScrollIntoView)}() is not overriden");
         }
-
     }
 }

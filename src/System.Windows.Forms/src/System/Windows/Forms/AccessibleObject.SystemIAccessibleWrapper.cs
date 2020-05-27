@@ -2,11 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable disable
-
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.Runtime.InteropServices;
 using Accessibility;
 using static Interop;
@@ -23,13 +20,13 @@ namespace System.Windows.Forms
         /// </summary>
         private class SystemIAccessibleWrapper : IAccessible
         {
-            private IAccessible _systemIAccessible;
+            private IAccessible? _systemIAccessible;
 
-            public SystemIAccessibleWrapper(IAccessible systemIAccessible)
+            public SystemIAccessibleWrapper(IAccessible? systemIAccessible)
                 => _systemIAccessible = systemIAccessible;
 
             public void accSelect(int flagsSelect, object varChild)
-                => Execute(() => _systemIAccessible.accSelect(flagsSelect, varChild));
+                => Execute(systemIAccessible => systemIAccessible.accSelect(flagsSelect, varChild));
 
             public void accLocation(out int pxLeft, out int pyTop, out int pcxWidth, out int pcyHeight, object varChild)
             {
@@ -38,15 +35,10 @@ namespace System.Windows.Forms
                 int width = 0;
                 int height = 0;
 
-                Execute(() =>
+                Execute(systemIAccessible =>
                 {
-                    _systemIAccessible.accLocation(out left, out top, out width, out height, varChild);
-
-                    Debug.WriteLineIf(CompModSwitches.MSAA.TraceInfo, "AccessibleObject.AccLocation: Setting " +
-                        left.ToString(CultureInfo.InvariantCulture) + ", " +
-                        top.ToString(CultureInfo.InvariantCulture) + ", " +
-                        width.ToString(CultureInfo.InvariantCulture) + ", " +
-                        height.ToString(CultureInfo.InvariantCulture));
+                    systemIAccessible.accLocation(out left, out top, out width, out height, varChild);
+                    Debug.WriteLineIf(CompModSwitches.MSAA.TraceInfo, $"AccessibleObject.AccLocation: Setting {left}, {top}, {width}, {height}");
                 });
 
                 pxLeft = left;
@@ -55,108 +47,108 @@ namespace System.Windows.Forms
                 pcyHeight = height;
             }
 
-            public object accNavigate(int navDir, object varStart)
-                => GetValue(() => _systemIAccessible.accNavigate(navDir, varStart));
+            public object? accNavigate(int navDir, object varStart)
+                => GetValue(systemIAccessible => systemIAccessible.accNavigate(navDir, varStart));
 
-            public object accHitTest(int xLeft, int yTop)
-                => GetValue(() => _systemIAccessible.accHitTest(xLeft, yTop));
+            public object? accHitTest(int xLeft, int yTop)
+                => GetValue(systemIAccessible => systemIAccessible.accHitTest(xLeft, yTop));
 
             public void accDoDefaultAction(object varChild)
-                => Execute(() => _systemIAccessible.accDoDefaultAction(varChild));
+                => Execute(systemIAccessible => systemIAccessible.accDoDefaultAction(varChild));
 
-            public object accParent
-                => GetValue(() => _systemIAccessible.accParent);
+            public object? accParent
+                => GetValue(systemIAccessible => systemIAccessible.accParent);
 
             public int accChildCount
-                => GetValue(() => _systemIAccessible.accChildCount);
+                => GetValue(systemIAccessible => systemIAccessible.accChildCount);
 
-            public object get_accChild(object childID)
-                => GetValue(() => _systemIAccessible.get_accChild(childID));
+            public object? get_accChild(object childID)
+                => GetValue(systemIAccessible => systemIAccessible.get_accChild(childID));
 
-            public string get_accName(object childID)
-                => GetValue(() => _systemIAccessible.get_accName(childID));
+            public string? get_accName(object childID)
+                => GetValue(systemIAccessible => systemIAccessible.get_accName(childID));
 
             public void set_accName(object childID, string newName)
-                => Execute(() => _systemIAccessible.set_accName(childID, newName));
+                => Execute(systemIAccessible => systemIAccessible.set_accName(childID, newName));
 
-            public string accName
+            public string? accName
             {
-                get => GetValue(() => _systemIAccessible.accName);
-                set => Execute(() => _systemIAccessible.accName = value);
+                get => GetValue(systemIAccessible => systemIAccessible.accName);
+                set => Execute(systemIAccessible => systemIAccessible.accName = value);
             }
 
-            public string accValue
+            public string? accValue
             {
-                get => GetValue(() => _systemIAccessible.accValue);
-                set => Execute(() => _systemIAccessible.accValue = value);
+                get => GetValue(systemIAccessible => systemIAccessible.accValue);
+                set => Execute(systemIAccessible => systemIAccessible.accValue = value);
             }
 
-            public string get_accValue(object childID)
-                => GetValue(() => _systemIAccessible.get_accValue(childID));
+            public string? get_accValue(object childID)
+                => GetValue(systemIAccessible => systemIAccessible.get_accValue(childID));
 
             public void set_accValue(object childID, string newValue)
-                => Execute(() => _systemIAccessible.set_accValue(childID, newValue));
+                => Execute(systemIAccessible => systemIAccessible.set_accValue(childID, newValue));
 
-            public string accDescription
-                => GetValue(() => _systemIAccessible.accDescription);
+            public string? accDescription
+                => GetValue(systemIAccessible => systemIAccessible.accDescription);
 
-            public string get_accDescription(object childID)
-                => GetValue(() => _systemIAccessible.get_accDescription(childID));
+            public string? get_accDescription(object childID)
+                => GetValue(systemIAccessible => systemIAccessible.get_accDescription(childID));
 
-            public object accRole
-                => GetValue(() => _systemIAccessible.accRole);
+            public object? accRole
+                => GetValue(systemIAccessible => systemIAccessible.accRole);
 
-            public object get_accRole(object childID)
-                => GetValue(() => _systemIAccessible.get_accRole(childID));
+            public object? get_accRole(object childID)
+                => GetValue(systemIAccessible => systemIAccessible.get_accRole(childID));
 
-            public object accState
-                => GetValue(() => _systemIAccessible.accState);
+            public object? accState
+                => GetValue(systemIAccessible => systemIAccessible.accState);
 
-            public object get_accState(object childID)
-                => GetValue(() => _systemIAccessible.get_accState(childID));
+            public object? get_accState(object childID)
+                => GetValue(systemIAccessible => systemIAccessible.get_accState(childID));
 
-            public string accHelp
-                => GetValue(() => _systemIAccessible.accHelp);
+            public string? accHelp
+                => GetValue(systemIAccessible => systemIAccessible.accHelp);
 
-            public string get_accHelp(object childID)
-                => GetValue(() => _systemIAccessible.get_accHelp(childID));
+            public string? get_accHelp(object childID)
+                => GetValue(systemIAccessible => systemIAccessible.get_accHelp(childID));
 
-            public int get_accHelpTopic(out string pszHelpFile, object childID)
+            public int get_accHelpTopic(out string? pszHelpFile, object childID)
             {
-                string helpFile = null;
-                int result = GetValue(() => _systemIAccessible.get_accHelpTopic(out helpFile, childID), -1);
+                string? helpFile = null;
+                int result = GetValue(systemIAccessible => systemIAccessible.get_accHelpTopic(out helpFile, childID), -1);
                 pszHelpFile = helpFile;
                 return result;
             }
 
-            public string accKeyboardShortcut
-                => GetValue(() => _systemIAccessible.accKeyboardShortcut);
+            public string? accKeyboardShortcut
+                => GetValue(systemIAccessible => systemIAccessible.accKeyboardShortcut);
 
-            public string get_accKeyboardShortcut(object childID)
-                => GetValue(() => _systemIAccessible.get_accKeyboardShortcut(childID));
+            public string? get_accKeyboardShortcut(object childID)
+                => GetValue(systemIAccessible => systemIAccessible.get_accKeyboardShortcut(childID));
 
-            public object accFocus
-                => GetValue(() => _systemIAccessible.accFocus);
+            public object? accFocus
+                => GetValue(systemIAccessible => systemIAccessible.accFocus);
 
-            public object accSelection
-                => GetValue(() => _systemIAccessible.accSelection);
+            public object? accSelection
+                => GetValue(systemIAccessible => systemIAccessible.accSelection);
 
-            public string accDefaultAction
-                => GetValue(() => _systemIAccessible.accDefaultAction);
+            public string? accDefaultAction
+                => GetValue(systemIAccessible => systemIAccessible.accDefaultAction);
 
-            public string get_accDefaultAction(object childID)
-                => GetValue(() => _systemIAccessible.get_accDefaultAction(childID));
+            public string? get_accDefaultAction(object childID)
+                => GetValue(systemIAccessible => systemIAccessible.get_accDefaultAction(childID));
 
-            private TReturn GetValue<TReturn>(Func<TReturn> getFunction) where TReturn : class
+            private TReturn? GetValue<TReturn>(Func<IAccessible, TReturn> getFunction) where TReturn : class
             {
-                if (_systemIAccessible == null || getFunction == null)
+                if (_systemIAccessible == null)
                 {
                     return null;
                 }
 
                 try
                 {
-                    return getFunction();
+                    return getFunction(_systemIAccessible);
                 }
                 catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
                 {
@@ -172,17 +164,17 @@ namespace System.Windows.Forms
             }
 
             private TReturn GetValue<TReturn>(
-                Func<TReturn> func,
+                Func<IAccessible, TReturn> func,
                 TReturn defaultReturnValue = default(TReturn)) where TReturn : struct
             {
-                if (_systemIAccessible == null || func == null)
+                if (_systemIAccessible == null)
                 {
                     return defaultReturnValue;
                 }
 
                 try
                 {
-                    return func();
+                    return func(_systemIAccessible);
                 }
                 catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
                 {
@@ -197,16 +189,16 @@ namespace System.Windows.Forms
                 return defaultReturnValue;
             }
 
-            private void Execute(Action action)
+            private void Execute(Action<IAccessible> action)
             {
-                if (_systemIAccessible == null || action == null)
+                if (_systemIAccessible == null)
                 {
                     return;
                 }
 
                 try
                 {
-                    action();
+                    action(_systemIAccessible);
                 }
                 catch (COMException e) when (e.ErrorCode == (int)HRESULT.DISP_E_MEMBERNOTFOUND)
                 {
