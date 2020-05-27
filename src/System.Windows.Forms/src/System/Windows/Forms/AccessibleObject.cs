@@ -1,4 +1,4 @@
-// Licensed to the .NET Foundation under one or more agreements.
+﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms.Automation;
 using Accessibility;
 using static Interop;
+using static Interop.Oleaut32;
 
 namespace System.Windows.Forms
 {
@@ -107,7 +108,7 @@ namespace System.Windows.Forms
         public virtual string? Description =>
             systemIAccessible.get_accDescription(NativeMethods.CHILDID_SELF);
 
-        private OleAut32.IEnumVariant EnumVariant =>
+        private IEnumVariant EnumVariant =>
             enumVariant ?? (enumVariant = new EnumVariantObject(this));
 
         /// <summary>
