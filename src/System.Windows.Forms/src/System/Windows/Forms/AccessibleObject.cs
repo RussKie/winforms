@@ -261,7 +261,7 @@ namespace System.Windows.Forms
         ///  Gets an identifier for a Help topic and the path to the Help file
         ///  associated with this accessible object.
         /// </summary>
-        public virtual int GetHelpTopic(out string fileName) =>
+        public virtual int GetHelpTopic(out string? fileName) =>
             systemIAccessible.get_accHelpTopic(out fileName, NativeMethods.CHILDID_SELF);
 
         /// <summary>
