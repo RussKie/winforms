@@ -3007,11 +3007,13 @@ namespace System.Windows.Forms.Tests
             control.KeyDown += handler;
             control.OnKeyDown(eventArgs);
             Assert.Equal(1, callCount);
+            Assert.False(control.IsHandleCreated);
 
             // Remove handler.
             control.KeyDown -= handler;
             control.OnKeyDown(eventArgs);
             Assert.Equal(1, callCount);
+            Assert.False(control.IsHandleCreated);
         }
 
         [WinFormsTheory]
@@ -3031,11 +3033,13 @@ namespace System.Windows.Forms.Tests
             control.KeyPress += handler;
             control.OnKeyPress(eventArgs);
             Assert.Equal(1, callCount);
+            Assert.False(control.IsHandleCreated);
 
             // Remove handler.
             control.KeyPress -= handler;
             control.OnKeyPress(eventArgs);
             Assert.Equal(1, callCount);
+            Assert.False(control.IsHandleCreated);
         }
 
         [WinFormsTheory]
@@ -3055,11 +3059,13 @@ namespace System.Windows.Forms.Tests
             control.KeyUp += handler;
             control.OnKeyUp(eventArgs);
             Assert.Equal(1, callCount);
+            Assert.False(control.IsHandleCreated);
 
             // Remove handler.
             control.KeyUp -= handler;
             control.OnKeyUp(eventArgs);
             Assert.Equal(1, callCount);
+            Assert.False(control.IsHandleCreated);
         }
 
         [WinFormsTheory]
@@ -3375,11 +3381,13 @@ namespace System.Windows.Forms.Tests
             control.MouseCaptureChanged += handler;
             control.OnMouseCaptureChanged(eventArgs);
             Assert.Equal(1, callCount);
+            Assert.False(control.IsHandleCreated);
 
            // Remove handler.
            control.MouseCaptureChanged -= handler;
            control.OnMouseCaptureChanged(eventArgs);
            Assert.Equal(1, callCount);
+            Assert.False(control.IsHandleCreated);
         }
 
         [WinFormsTheory]
@@ -3399,11 +3407,13 @@ namespace System.Windows.Forms.Tests
             control.MouseClick += handler;
             control.OnMouseClick(eventArgs);
             Assert.Equal(1, callCount);
+            Assert.False(control.IsHandleCreated);
 
             // Remove handler.
             control.MouseClick -= handler;
             control.OnMouseClick(eventArgs);
             Assert.Equal(1, callCount);
+            Assert.False(control.IsHandleCreated);
         }
 
         [WinFormsTheory]
@@ -3423,11 +3433,13 @@ namespace System.Windows.Forms.Tests
             control.MouseDoubleClick += handler;
             control.OnMouseDoubleClick(eventArgs);
             Assert.Equal(1, callCount);
+            Assert.False(control.IsHandleCreated);
 
             // Remove handler.
             control.MouseDoubleClick -= handler;
             control.OnMouseDoubleClick(eventArgs);
             Assert.Equal(1, callCount);
+            Assert.False(control.IsHandleCreated);
         }
 
         [WinFormsTheory]
@@ -3447,11 +3459,13 @@ namespace System.Windows.Forms.Tests
             control.MouseDown += handler;
             control.OnMouseDown(eventArgs);
             Assert.Equal(1, callCount);
+            Assert.False(control.IsHandleCreated);
 
             // Remove handler.
             control.MouseDown -= handler;
             control.OnMouseDown(eventArgs);
             Assert.Equal(1, callCount);
+            Assert.False(control.IsHandleCreated);
         }
 
         [WinFormsTheory]
@@ -3471,11 +3485,13 @@ namespace System.Windows.Forms.Tests
             control.MouseEnter += handler;
             control.OnMouseEnter(eventArgs);
             Assert.Equal(1, callCount);
+            Assert.False(control.IsHandleCreated);
 
             // Remove handler.
             control.MouseEnter -= handler;
             control.OnMouseEnter(eventArgs);
             Assert.Equal(1, callCount);
+            Assert.False(control.IsHandleCreated);
         }
 
         [WinFormsTheory]
@@ -3495,11 +3511,13 @@ namespace System.Windows.Forms.Tests
             control.MouseHover += handler;
             control.OnMouseHover(eventArgs);
             Assert.Equal(1, callCount);
+            Assert.False(control.IsHandleCreated);
 
             // Remove handler.
             control.MouseHover -= handler;
             control.OnMouseHover(eventArgs);
             Assert.Equal(1, callCount);
+            Assert.False(control.IsHandleCreated);
         }
 
         [WinFormsTheory]
@@ -3519,11 +3537,13 @@ namespace System.Windows.Forms.Tests
             control.MouseLeave += handler;
             control.OnMouseLeave(eventArgs);
             Assert.Equal(1, callCount);
+            Assert.False(control.IsHandleCreated);
 
             // Remove handler.
             control.MouseLeave -= handler;
             control.OnMouseLeave(eventArgs);
             Assert.Equal(1, callCount);
+            Assert.False(control.IsHandleCreated);
         }
 
         [WinFormsTheory]
@@ -3543,11 +3563,13 @@ namespace System.Windows.Forms.Tests
             control.MouseMove += handler;
             control.OnMouseMove(eventArgs);
             Assert.Equal(1, callCount);
+            Assert.False(control.IsHandleCreated);
 
             // Remove handler.
             control.MouseMove -= handler;
             control.OnMouseMove(eventArgs);
             Assert.Equal(1, callCount);
+            Assert.False(control.IsHandleCreated);
         }
 
         [WinFormsTheory]
@@ -3567,11 +3589,13 @@ namespace System.Windows.Forms.Tests
             control.MouseUp += handler;
             control.OnMouseUp(eventArgs);
             Assert.Equal(1, callCount);
+            Assert.False(control.IsHandleCreated);
 
             // Remove handler.
             control.MouseUp -= handler;
             control.OnMouseUp(eventArgs);
             Assert.Equal(1, callCount);
+            Assert.False(control.IsHandleCreated);
         }
 
         [WinFormsTheory]
@@ -3591,11 +3615,13 @@ namespace System.Windows.Forms.Tests
             control.MouseWheel += handler;
             control.OnMouseWheel(eventArgs);
             Assert.Equal(1, callCount);
+            Assert.False(control.IsHandleCreated);
 
             // Remove handler.
             control.MouseWheel -= handler;
             control.OnMouseWheel(eventArgs);
             Assert.Equal(1, callCount);
+            Assert.False(control.IsHandleCreated);
         }
 
         [WinFormsFact]
@@ -3616,6 +3642,7 @@ namespace System.Windows.Forms.Tests
             control.OnMouseWheel(eventArgs);
             Assert.Equal(1, callCount);
             Assert.False(eventArgs.Handled);
+            Assert.False(control.IsHandleCreated);
         }
 
         [WinFormsTheory]
