@@ -13,18 +13,23 @@ using Moq;
 using Moq.Protected;
 using WinForms.Common.Tests;
 using Xunit;
+using VerifyXunit;
 
 namespace System.Windows.Forms.Tests
 {
     using Point = System.Drawing.Point;
     using Size = System.Drawing.Size;
 
+    [UsesVerify]
     public class PropertyGridTests : IClassFixture<ThreadExceptionFixture>
     {
         [WinFormsFact]
         public void PropertyGrid_Ctor_Default()
         {
             using var control = new SubPropertyGrid();
+
+            Verifier.Verify(control);
+
             Assert.Null(control.AccessibleDefaultActionDescription);
             Assert.Null(control.AccessibleDescription);
             Assert.Null(control.AccessibleName);
@@ -3249,7 +3254,7 @@ namespace System.Windows.Forms.Tests
         {
             yield return new object[] { Color.Empty, SystemColors.ControlText };
             yield return new object[] { Color.Red, Color.Red };
-            yield return new object[] { Color.FromArgb(254, 1, 2, 3),Color.FromArgb(254, 1, 2, 3) };
+            yield return new object[] { Color.FromArgb(254, 1, 2, 3), Color.FromArgb(254, 1, 2, 3) };
         }
 
         [WinFormsTheory]
