@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CoreCorruptionTest2": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}
