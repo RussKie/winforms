@@ -114,7 +114,7 @@ namespace System.Windows.Forms
                 {
                     if (Count > 0)
                     {
-                        index = InnerArray.BinarySearch(item);
+                        index = InnerArray.BinarySearch(new ItemArray.Entry(item));
                         if (index < 0)
                         {
                             // getting the index of the first element that is larger than the search value

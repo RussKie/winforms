@@ -228,7 +228,7 @@ namespace System.Windows.Forms
                     return null;
                 }
 
-                ItemArray.Entry item = _owningListBox.Items.InnerArray.Entries[index];
+                ItemArray.Entry item = _owningListBox.Items.InnerArray[index];
                 if (!_itemAccessibleObjects.ContainsKey(item))
                 {
                     _itemAccessibleObjects.Add(item, new ListBoxItemAccessibleObject(_owningListBox, item, this));

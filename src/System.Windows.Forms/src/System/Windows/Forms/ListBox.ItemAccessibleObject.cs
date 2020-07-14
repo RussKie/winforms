@@ -33,7 +33,7 @@ namespace System.Windows.Forms
                 _systemIAccessible = owningAccessibleObject.GetSystemIAccessibleInternal();
             }
 
-            private int CurrentIndex => Array.IndexOf(_owningListBox.Items.InnerArray.Entries as Array, _itemEntry);
+            private int CurrentIndex => _owningListBox.Items.InnerArray.IndexOf(_itemEntry);
 
             internal override UiaCore.IRawElementProviderFragmentRoot FragmentRoot => _owningAccessibleObject;
 

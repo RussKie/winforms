@@ -46,19 +46,19 @@ namespace System.Windows.Forms
 
                     while (true)
                     {
-                        if (_current < _items._count - 1)
+                        if (_current < _items.Count - 1)
                         {
                             _current++;
                             if (_anyBit)
                             {
-                                if ((_items._entries[_current].state & _state) != 0)
+                                if ((_items[_current].state & _state) != 0)
                                 {
                                     return true;
                                 }
                             }
                             else
                             {
-                                if ((_items._entries[_current].state & _state) == _state)
+                                if ((_items[_current].state & _state) == _state)
                                 {
                                     return true;
                                 }
@@ -66,7 +66,7 @@ namespace System.Windows.Forms
                         }
                         else
                         {
-                            _current = _items._count;
+                            _current = _items.Count;
                             return false;
                         }
                     }
@@ -92,12 +92,12 @@ namespace System.Windows.Forms
                 {
                     get
                     {
-                        if (_current == -1 || _current == _items._count)
+                        if (_current == -1 || _current == _items.Count)
                         {
                             throw new InvalidOperationException(SR.ListEnumCurrentOutOfRange);
                         }
 
-                        return _items._entries[_current].item;
+                        return _items[_current].item;
                     }
                 }
             }
