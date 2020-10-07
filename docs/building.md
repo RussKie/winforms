@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-Follow the prerequisites listed at [Developer Guide](developer-guide).
+Follow the prerequisites listed at [Developer Guide](developer-guide.md).
 
 ## Building
 
