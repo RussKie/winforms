@@ -42,6 +42,7 @@ namespace WinformsControlsTest
             this.btnClearListView1 = new System.Windows.Forms.Button();
             this.btnLoadImagesListView1 = new System.Windows.Forms.Button();
             this.LargeImageList = new System.Windows.Forms.ImageList(this.components);
+            this.btnReplaceImageListView1 = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.SuspendLayout();
             // 
@@ -121,10 +122,21 @@ namespace WinformsControlsTest
             this.openFileDialog1.Multiselect = true;
             this.openFileDialog1.SupportMultiDottedExtensions = true;
             // 
+            // btnReplaceImageListView1
+            // 
+            this.btnReplaceImageListView1.Location = new System.Drawing.Point(176, 4);
+            this.btnReplaceImageListView1.Name = "btnReplaceImageListView1";
+            this.btnReplaceImageListView1.Size = new System.Drawing.Size(87, 23);
+            this.btnReplaceImageListView1.TabIndex = 3;
+            this.btnReplaceImageListView1.Text = "Replace image";
+            this.btnReplaceImageListView1.UseVisualStyleBackColor = true;
+            this.btnReplaceImageListView1.Click += new System.EventHandler(this.btnReplaceImageListView1_Click);
+            // 
             // ListViewTest
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.btnReplaceImageListView1);
             this.Controls.Add(this.btnLoadImagesListView1);
             this.Controls.Add(this.btnClearListView1);
             this.Controls.Add(this.listView1);
@@ -136,14 +148,15 @@ namespace WinformsControlsTest
 
         #endregion
 
-        private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.ImageList imageList2;
+        private System.Windows.Forms.ImageList LargeImageList;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.Button btnClearListView1;
         private System.Windows.Forms.Button btnLoadImagesListView1;
-        private System.Windows.Forms.ImageList LargeImageList;
+        private System.Windows.Forms.Button btnReplaceImageListView1;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
     }
 }

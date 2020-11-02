@@ -255,7 +255,28 @@ namespace WinformsControlsTest
                 };
                 listView1.Items.Add(item);
             }
+        }
+        private void btnReplaceImageListView1_Click(object sender, EventArgs e)
+        {
+            if (listView1.SelectedIndices.Count != 1)
+            {
+                return;
+            }
 
+            openFileDialog1.Multiselect = false;
+            DialogResult result = openFileDialog1.ShowDialog();
+            openFileDialog1.Multiselect = true;
+
+            if (result != DialogResult.OK)
+            {
+                return;
+            }
+
+            string file = openFileDialog1.FileName;
+            Bitmap bitmap = (Bitmap)Bitmap.FromFile(file);
+            LargeImageList.Images[listView1.SelectedIndices[0]] = bitmap;
+
+            listView1.Refresh();
         }
     }
 }
