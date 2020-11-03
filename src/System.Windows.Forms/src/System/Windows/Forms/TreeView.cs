@@ -2061,7 +2061,8 @@ namespace System.Windows.Forms
             IntPtr handleOld = User32.SendMessageW(this, (User32.WM)TVM.SETIMAGELIST, (IntPtr)TVSIL.STATE, handle);
             if ((handleOld != IntPtr.Zero) && (handleOld != handle))
             {
-                ComCtl32.ImageList.Destroy(new HandleRef(this, handleOld));
+                BOOL result = ComCtl32.ImageList.Destroy(new HandleRef(this, handleOld));
+                Debug.Assert(result.IsTrue());
             }
         }
 
@@ -2072,7 +2073,9 @@ namespace System.Windows.Forms
             IntPtr handle = User32.SendMessageW(this, (User32.WM)TVM.GETIMAGELIST, (IntPtr)TVSIL.STATE);
             if (handle != IntPtr.Zero)
             {
-                ComCtl32.ImageList.Destroy(new HandleRef(this, handle));
+                BOOL result = ComCtl32.ImageList.Destroy(new HandleRef(this, handle));
+                Debug.Assert(result.IsTrue());
+
                 if (reset)
                 {
                     User32.SendMessageW(this, (User32.WM)TVM.SETIMAGELIST, (IntPtr)TVSIL.STATE);

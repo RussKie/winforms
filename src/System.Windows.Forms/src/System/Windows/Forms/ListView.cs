@@ -565,13 +565,13 @@ namespace System.Windows.Forms
                         // user's images.
                         if (IsHandleCreated && _imageListState != null)
                         {
-                            if (CheckBoxes)
-                            { // we want custom checkboxes
-                                User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.STATE, _imageListState.Handle);
-                            }
-                            else
+                            // we want custom checkboxes
+                            IntPtr handle = CheckBoxes ? _imageListState.Handle : IntPtr.Zero;
+                            IntPtr previousHandle = User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.STATE, handle);
+                            if (previousHandle != IntPtr.Zero && previousHandle != handle)
                             {
-                                User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.STATE, IntPtr.Zero);
+                                BOOL result = ComCtl32.ImageList.Destroy(previousHandle);
+                                Debug.Assert(result.IsTrue());
                             }
                         }
 
@@ -974,8 +974,13 @@ namespace System.Windows.Forms
                     return;
                 }
 
-                User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.GROUPHEADER,
-                        value is null ? IntPtr.Zero : value.Handle);
+                IntPtr handle = value is null ? IntPtr.Zero : value.Handle;
+                IntPtr previousHandle = User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.GROUPHEADER, handle);
+                if (previousHandle != IntPtr.Zero && previousHandle != handle)
+                {
+                    BOOL result = ComCtl32.ImageList.Destroy(previousHandle);
+                    Debug.Assert(result.IsTrue());
+                }
             }
         }
 
@@ -1240,7 +1245,14 @@ namespace System.Windows.Forms
                     return;
                 }
 
-                User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.NORMAL, value is null ? IntPtr.Zero : value.Handle);
+                IntPtr handle = value is null ? IntPtr.Zero : value.Handle;
+                IntPtr previousHandle = User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.NORMAL, handle);
+                if (previousHandle != IntPtr.Zero && previousHandle != handle)
+                {
+                    BOOL result = ComCtl32.ImageList.Destroy(previousHandle);
+                    Debug.Assert(result.IsTrue());
+                }
+
                 if (AutoArrange && !listViewState1[LISTVIEWSTATE1_disposingImageLists])
                 {
                     UpdateListViewItemsLocations();
@@ -1479,7 +1491,13 @@ namespace System.Windows.Forms
                     return;
                 }
 
-                User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.SMALL, value is null ? IntPtr.Zero : value.Handle);
+                IntPtr handle = value is null ? IntPtr.Zero : value.Handle;
+                IntPtr previousHandle = User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.SMALL, handle);
+                if (previousHandle != IntPtr.Zero && previousHandle != handle)
+                {
+                    BOOL result = ComCtl32.ImageList.Destroy(previousHandle);
+                    Debug.Assert(result.IsTrue());
+                }
 
                 if (View == View.SmallIcon)
                 {
@@ -1584,7 +1602,13 @@ namespace System.Windows.Forms
 
                     if (IsHandleCreated)
                     {
-                        User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.STATE, value is null ? IntPtr.Zero : value.Handle);
+                        IntPtr handle = value is null ? IntPtr.Zero : value.Handle;
+                        IntPtr previousHandle = User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.STATE, handle);
+                        if (previousHandle != IntPtr.Zero && previousHandle != handle)
+                        {
+                            BOOL result = ComCtl32.ImageList.Destroy(previousHandle);
+                            Debug.Assert(result.IsTrue());
+                        }
                     }
                 }
                 else
@@ -1599,7 +1623,12 @@ namespace System.Windows.Forms
                         // (Yes, it does exactly that even though our wrapper sets LVS_SHAREIMAGELISTS on the native listView.)
                         // So we make the native listView forget about its StateImageList just before we recreate the handle.
                         // Likely related to https://devblogs.microsoft.com/oldnewthing/20171128-00/?p=97475
-                        User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.STATE, IntPtr.Zero);
+                        IntPtr previousHandle = User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.STATE, IntPtr.Zero);
+                        if (previousHandle != IntPtr.Zero && previousHandle != _imageListState.Handle)
+                        {
+                            BOOL result = ComCtl32.ImageList.Destroy(previousHandle);
+                            Debug.Assert(result.IsTrue());
+                        }
                     }
 
                     _imageListState = value;
@@ -1617,8 +1646,13 @@ namespace System.Windows.Forms
                     }
                     else
                     {
-                        User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.STATE,
-                            (_imageListState is null || _imageListState.Images.Count == 0) ? IntPtr.Zero : _imageListState.Handle);
+                        IntPtr handle = (_imageListState is null || _imageListState.Images.Count == 0) ? IntPtr.Zero : _imageListState.Handle;
+                        IntPtr previousHandle = User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.STATE, handle);
+                        if (previousHandle != IntPtr.Zero && previousHandle != handle)
+                        {
+                            BOOL result = ComCtl32.ImageList.Destroy(previousHandle);
+                            Debug.Assert(result.IsTrue());
+                        }
                     }
 
                     // Comctl should handle auto-arrange for us, but doesn't
@@ -3683,7 +3717,12 @@ namespace System.Windows.Forms
             }
 
             IntPtr handle = (GroupImageList is null) ? IntPtr.Zero : GroupImageList.Handle;
-            User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.GROUPHEADER, handle);
+            IntPtr previousHandle = User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.GROUPHEADER, handle);
+            if (previousHandle != IntPtr.Zero && previousHandle != handle)
+            {
+                BOOL result = ComCtl32.ImageList.Destroy(previousHandle);
+                Debug.Assert(result.IsTrue());
+            }
         }
 
         public ListViewHitTestInfo HitTest(Point point)
@@ -4254,7 +4293,12 @@ namespace System.Windows.Forms
             }
 
             IntPtr handle = (LargeImageList is null) ? IntPtr.Zero : LargeImageList.Handle;
-            User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.NORMAL, handle);
+            IntPtr previousHandle = User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.NORMAL, handle);
+            if (previousHandle != IntPtr.Zero && previousHandle != handle)
+            {
+                BOOL result = ComCtl32.ImageList.Destroy(previousHandle);
+                Debug.Assert(result.IsTrue());
+            }
 
             ForceCheckBoxUpdate();
         }
@@ -4597,7 +4641,7 @@ namespace System.Windows.Forms
 
         protected override void OnHandleDestroyed(EventArgs e)
         {
-            // don't save the list view items state when in virtual mode : it is the responsability of the
+            // don't save the list view items state when in virtual mode : it is the responsibility of the
             // user to cache the list view items in virtual mode
             if (!Disposing && !VirtualMode)
             {
@@ -4862,22 +4906,42 @@ namespace System.Windows.Forms
 
             if (_imageListLarge != null)
             {
-                User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.NORMAL, _imageListLarge.Handle);
+                IntPtr previousHandle = User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.NORMAL, _imageListLarge.Handle);
+                if (previousHandle != IntPtr.Zero && previousHandle != _imageListLarge.Handle)
+                {
+                    BOOL result = ComCtl32.ImageList.Destroy(previousHandle);
+                    Debug.Assert(result.IsTrue());
+                }
             }
 
             if (_imageListSmall != null)
             {
-                User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.SMALL, _imageListSmall.Handle);
+                IntPtr previousHandle = User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.SMALL, _imageListSmall.Handle);
+                if (previousHandle != IntPtr.Zero && previousHandle != _imageListSmall.Handle)
+                {
+                    BOOL result = ComCtl32.ImageList.Destroy(previousHandle);
+                    Debug.Assert(result.IsTrue());
+                }
             }
 
             if (_imageListState != null)
             {
-                User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.STATE, _imageListState.Handle);
+                IntPtr previousHandle = User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.STATE, _imageListState.Handle);
+                if (previousHandle != IntPtr.Zero && previousHandle != _imageListState.Handle)
+                {
+                    BOOL result = ComCtl32.ImageList.Destroy(previousHandle);
+                    Debug.Assert(result.IsTrue());
+                }
             }
 
             if (_imageListGroup != null)
             {
-                User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.GROUPHEADER, _imageListGroup.Handle);
+                IntPtr previousHandle = User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.GROUPHEADER, _imageListGroup.Handle);
+                if (previousHandle != IntPtr.Zero && previousHandle != _imageListGroup.Handle)
+                {
+                    BOOL result = ComCtl32.ImageList.Destroy(previousHandle);
+                    Debug.Assert(result.IsTrue());
+                }
             }
         }
 
@@ -5402,7 +5466,12 @@ namespace System.Windows.Forms
             }
 
             IntPtr handle = (SmallImageList is null) ? IntPtr.Zero : SmallImageList.Handle;
-            User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.SMALL, handle);
+            IntPtr previousHandle = User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.SMALL, handle);
+            if (previousHandle != IntPtr.Zero && previousHandle != handle)
+            {
+                BOOL result = ComCtl32.ImageList.Destroy(previousHandle);
+                Debug.Assert(result.IsTrue());
+            }
 
             ForceCheckBoxUpdate();
         }
@@ -5434,7 +5503,12 @@ namespace System.Windows.Forms
             }
 
             IntPtr handle = (StateImageList is null) ? IntPtr.Zero : StateImageList.Handle;
-            User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.STATE, handle);
+            IntPtr previousHandle = User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.STATE, handle);
+            if (previousHandle != IntPtr.Zero && previousHandle != handle)
+            {
+                BOOL result = ComCtl32.ImageList.Destroy(previousHandle);
+                Debug.Assert(result.IsTrue());
+            }
         }
 
         /// <summary>
@@ -6199,7 +6273,12 @@ namespace System.Windows.Forms
             // (Yes, it does exactly that even though our wrapper sets LVS_SHAREIMAGELISTS on the native listView.)
             if (IsHandleCreated && StateImageList != null)
             {
-                User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.STATE, IntPtr.Zero);
+                IntPtr previousHandle = User32.SendMessageW(this, (User32.WM)LVM.SETIMAGELIST, (IntPtr)LVSIL.STATE);
+                if (previousHandle != IntPtr.Zero)
+                {
+                    BOOL result = ComCtl32.ImageList.Destroy(previousHandle);
+                    Debug.Assert(result.IsTrue());
+                }
             }
 
             RecreateHandle();
