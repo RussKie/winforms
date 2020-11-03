@@ -91,13 +91,6 @@ namespace System.Windows.Forms
             }
 #endif
 
-            internal IntPtr TransferOwnership()
-            {
-                var handle = Handle;
-                Handle = IntPtr.Zero;
-                return handle;
-            }
-
             internal NativeImageList Duplicate()
             {
                 lock (s_syncLock)
