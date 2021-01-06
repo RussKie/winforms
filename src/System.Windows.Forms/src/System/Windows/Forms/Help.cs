@@ -111,9 +111,18 @@ namespace System.Windows.Forms
                 clrForeground = new COLORREF(unchecked((uint)-1)),  // Ignore
                 clrBackground = SystemColors.Window
             };
-            fixed (char* pszText = caption)
+
+            var font = SystemFonts.CaptionFont;
+            string captionFont = $"{font.Name}, {font.Size}, , " +
+                $"{(font.Bold ? "BOLD" : "")}" +
+                $"{(font.Italic ? "ITALIC" : "")}" +
+                $"{(font.Underline ? "UNDERLINE" : "")}";
+
+            fixed (char* pszText = caption, pszFont = captionFont)
             {
                 pop.pszText = pszText;
+                pop.pszFont = pszFont;
+
                 ShowHTML10Help(parent, null, HelpNavigator.Topic, pop);
             }
         }

@@ -12,6 +12,13 @@ namespace WinformsControlsTest
         public ErrorProviderTest()
         {
             InitializeComponent();
+
+            HelpButton = true;
+            MinimizeBox = MaximizeBox = false;
+
+            var helpProvider = new HelpProvider();
+            helpProvider.SetHelpString(submitButton, "متن آزمایشی");
+            helpProvider.SetShowHelp(submitButton, true);
         }
 
         private void submitButton_Click(object sender, EventArgs e)
