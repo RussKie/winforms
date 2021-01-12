@@ -325,7 +325,7 @@ namespace System.Windows.Forms
 
         private unsafe static (IntPtr inst, IntPtr vtable) GetContextSafeRef(RCW_IAgileReference agileRef)
         {
-            IntPtr instSafe = agileRef.Resolve(typeof(IDataObject).GUID);
+            IntPtr instSafe = agileRef.Resolve(typeof(IComDataObject).GUID);
 
             // Retain the instance's vtable when in context.
             unsafe
@@ -457,7 +457,7 @@ namespace System.Windows.Forms
             public int RefCount;
         }
 
-        public static IntPtr CreateInstance(IDataObject dataObject)
+        public static IntPtr CreateInstance(IFormsDataObject dataObject)
         {
             unsafe
             {

@@ -256,6 +256,9 @@ namespace System.Windows.Forms.Tests
         {
             Clipboard.SetDataObject(data);
             var dataObject = Clipboard.GetDataObject();
+            var dataObject1 = Clipboard.GetDataObject1();
+            var data0 = dataObject.GetData(data.GetType());
+            var data1 = dataObject1.GetData(data.GetType());
             Assert.Equal(data, dataObject.GetData(data.GetType()));
             Assert.True(Clipboard.ContainsData(data.GetType().FullName));
         }

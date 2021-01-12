@@ -141,12 +141,36 @@ namespace System.Windows.Forms
             return GetDataObject(retryTimes: 10, retryDelay: 100);
         }
 
+        public static IDataObject GetDataObject1()
+        {
+            if (Application.OleRequired() != ApartmentState.STA)
+            {
+                // Only throw if a message loop was started. This makes the case of trying
+                // to query the clipboard from your finalizer or non-ui MTA thread
+                // silently fail, instead of making your app die.
+                //
+                // however, if you are trying to write a normal windows forms app and
+                // forget to set the STAThread attribute, we will correctly report
+                // an error to aid in debugging.
+                if (Application.MessageLoop)
+                {
+                    throw new ThreadStateException(SR.ThreadMustBeSTA);
+                }
+
+                return null;
+            }
+
+            // We need to retry the GetDataObject() since the clipBaord is busy sometimes
+            // and hence the GetDataObject would fail with ClipBoardException.
+            return GetDataObject1(retryTimes: 10, retryDelay: 100);
+        }
+
+
         /// <remarks>
         ///  Private method to help accessing clipBoard for know retries before failing.
         /// </remarks>
         private static IDataObject GetDataObject(int retryTimes, int retryDelay)
         {
-            /*
             IComDataObject dataObject = null;
             HRESULT hr;
             int retry = retryTimes;
@@ -177,8 +201,9 @@ namespace System.Windows.Forms
             }
 
             return null;
-            */
-
+        }
+        private static IDataObject GetDataObject1(int retryTimes, int retryDelay)
+        {
             object dataObject = ClipboardImpl.Get(retryTimes, retryDelay);
             if (dataObject is not null)
             {
