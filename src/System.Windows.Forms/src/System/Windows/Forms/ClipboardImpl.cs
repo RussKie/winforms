@@ -47,7 +47,7 @@ namespace System.Windows.Forms
             }
 
             IntPtr agileReference;
-            var iid = typeof(IComDataObject).GUID;
+            Guid iid = typeof(IComDataObject).GUID;
             hr = Ole32.RoGetAgileReference(
                 Ole32.AgileReferenceOptions.Default,
                 ref iid,
@@ -98,7 +98,7 @@ namespace System.Windows.Forms
             {
                 // This approach is less than ideal since a new wrapper is always
                 // created. Having an efficient cache would be more effective.
-                var ccw = CCW_IDataObject.CreateInstance(forms_dataObject);
+                IntPtr ccw = CCW_IDataObject.CreateInstance(forms_dataObject);
                 hr = Ole32.OleSetClipboard(ccw);
             }
             else
@@ -164,23 +164,23 @@ namespace System.Windows.Forms
         }
 
         private readonly IntPtr instance;
-        private readonly unsafe AgileReferenceVTable* vtable;
+        private readonly unsafe AgileReferenceVTable* _vtable;
 
         public RCW_IAgileReference(IntPtr instance)
         {
             this.instance = instance;
             unsafe
             {
-                this.vtable = *(AgileReferenceVTable**)instance;
+                _vtable = *(AgileReferenceVTable**)instance;
             }
         }
 
         // An IAgileReference instance handles release on the correct context.
         ~RCW_IAgileReference()
         {
-            if (this.instance != IntPtr.Zero)
+            if (instance != IntPtr.Zero)
             {
-                Marshal.Release(this.instance);
+                Marshal.Release(instance);
             }
         }
 
@@ -192,7 +192,7 @@ namespace System.Windows.Forms
                 IntPtr resolvedInstance;
 
                 // Dispatch
-                int hr = this.vtable->Resolve(this.instance, ref iid, out resolvedInstance);
+                int hr = _vtable->Resolve(instance, ref iid, out resolvedInstance);
                 if (hr != 0)
                 {
                     Marshal.ThrowExceptionForHR(hr);
@@ -241,25 +241,25 @@ namespace System.Windows.Forms
 
     internal class RCW_IDataObject : IComDataObject
     {
-        private readonly RCW_IAgileReference agileInstance;
-        private readonly IntPtr instanceInSta;
-        private readonly unsafe DataObjectVTable* vtableInSta;
+        private readonly RCW_IAgileReference _agileInstance;
+        private readonly IntPtr _instanceInSta;
+        private readonly unsafe DataObjectVTable* _vtableInSta;
 
         public RCW_IDataObject(RCW_IAgileReference agileReference)
         {
             // Use IAgileReference instance to always be in context.
-            this.agileInstance = agileReference;
+            _agileInstance = agileReference;
 
             Debug.Assert(Thread.CurrentThread.GetApartmentState() == ApartmentState.STA);
 
             // Assuming this class is always in context getting it once is possible.
             // See Finalizer for lifetime detail concerns. If the Clipboard instance
             // is considered a process singleton, then it could be leaked.
-            (IntPtr instance, IntPtr vtable) = GetContextSafeRef(this.agileInstance);
-            this.instanceInSta = instance;
+            (IntPtr instance, IntPtr vtable) = GetContextSafeRef(_agileInstance);
+            _instanceInSta = instance;
             unsafe
             {
-                this.vtableInSta = (DataObjectVTable*)vtable;
+                _vtableInSta = (DataObjectVTable*)vtable;
             }
         }
 
@@ -287,7 +287,7 @@ namespace System.Windows.Forms
                 return;
             }
 
-            IntPtr instanceLocal = this.instanceInSta;
+            IntPtr instanceLocal = _instanceInSta;
             if (instanceLocal != IntPtr.Zero)
             {
                 // Clean up on the main thread
@@ -313,7 +313,7 @@ namespace System.Windows.Forms
         public IntPtr GetInstanceForSta()
         {
             Debug.Assert(Thread.CurrentThread.GetApartmentState() == ApartmentState.STA);
-            return this.instanceInSta;
+            return _instanceInSta;
         }
 
         public void GetData(ref FORMATETC format, out STGMEDIUM medium)
@@ -326,7 +326,7 @@ namespace System.Windows.Forms
 
                 // Dispatch
                 int hr;
-                (IntPtr instance, IntPtr vtable) = GetContextSafeRef(this.agileInstance);
+                (IntPtr instance, IntPtr vtable) = GetContextSafeRef(_agileInstance);
                 fixed (FORMATETC* formatFixed = &format)
                 {
                     hr = ((DataObjectVTable*)vtable)->GetData(instance, formatFixed, &stgmed);
@@ -385,7 +385,7 @@ namespace System.Windows.Forms
 
                 // Dispatch
                 int hr;
-                (IntPtr instance, IntPtr vtable) = GetContextSafeRef(this.agileInstance);
+                (IntPtr instance, IntPtr vtable) = GetContextSafeRef(_agileInstance);
                 fixed (FORMATETC* formatFixed = &formatIn)
                 {
                     hr = ((DataObjectVTable*)vtable)->SetData(instance, formatFixed, &stgmed, isRelease);
@@ -523,7 +523,6 @@ namespace System.Windows.Forms
 
             AddRefInternal(_this);
             return 0;
-
         }
 
         private static int AddRefInternal(IntPtr _this)
