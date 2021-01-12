@@ -26,19 +26,44 @@ namespace System.Windows.Forms
             }
         }
 
-        public static object Get()
+        public static object Get(int retryTimes, int retryDelay)
         {
             if (Thread.CurrentThread.GetApartmentState() != ApartmentState.STA)
             {
-                throw new InvalidOperationException();
+                // Only throw if a message loop was started. This makes the case of trying
+                // to query the clipboard from your finalizer or non-ui MTA thread
+                // silently fail, instead of making your app die.
+                //
+                // however, if you are trying to write a normal windows forms app and
+                // forget to set the STAThread attribute, we will correctly report
+                // an error to aid in debugging.
+                if (Application.MessageLoop)
+                {
+                    throw new ThreadStateException(SR.ThreadMustBeSTA);
+                }
+
+                return null;
             }
 
             IntPtr instance;
-            int hr = Ole32.OleGetClipboard(out instance);
-            if (hr != 0)
+            int hr;
+            int retry = retryTimes;
+            do
             {
-                Marshal.ThrowExceptionForHR(hr);
+                hr = Ole32.OleGetClipboard(out instance);
+                if (hr != 0)
+                {
+                    if (retry == 0)
+                    {
+                        // throw new ExternalException(SR.ClipboardOperationFailed, (int)hr);
+                        Marshal.ThrowExceptionForHR(hr);
+                    }
+
+                    retry--;
+                    Thread.Sleep(millisecondsTimeout: retryDelay);
+                }
             }
+            while (hr != 0);
 
             // Check if the returned value is actually a wrapped managed instance.
             if (CCW_IDataObject.TryGetInstance(instance, out IFormsDataObject forms_dataObject))

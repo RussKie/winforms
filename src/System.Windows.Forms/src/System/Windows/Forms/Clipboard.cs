@@ -5,7 +5,6 @@
 #nullable disable
 
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -137,7 +136,8 @@ namespace System.Windows.Forms
                 return null;
             }
 
-            // We need to retry the GetDataObject() since the clipBaord is busy sometimes and hence the GetDataObject would fail with ClipBoardException.
+            // We need to retry the GetDataObject() since the clipBaord is busy sometimes
+            // and hence the GetDataObject would fail with ClipBoardException.
             return GetDataObject(retryTimes: 10, retryDelay: 100);
         }
 
@@ -146,6 +146,7 @@ namespace System.Windows.Forms
         /// </remarks>
         private static IDataObject GetDataObject(int retryTimes, int retryDelay)
         {
+            /*
             IComDataObject dataObject = null;
             HRESULT hr;
             int retry = retryTimes;
@@ -176,6 +177,21 @@ namespace System.Windows.Forms
             }
 
             return null;
+            */
+
+            object dataObject = ClipboardImpl.Get(retryTimes, retryDelay);
+            if (dataObject is not null)
+            {
+                if (dataObject is IDataObject ido)
+                {
+                    return ido;
+                }
+
+                return new DataObject(dataObject);
+            }
+
+            return null;
+
         }
 
         public static void Clear()

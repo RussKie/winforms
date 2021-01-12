@@ -7,12 +7,9 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Threading;
-using Moq;
 using WinForms.Common.Tests;
 using Xunit;
-using IComDataObject = System.Runtime.InteropServices.ComTypes.IDataObject;
 
 namespace System.Windows.Forms.Tests
 {
@@ -258,7 +255,8 @@ namespace System.Windows.Forms.Tests
         public void Clipboard_SetDataObject_InvokeObjectNotIComDataObject_GetReturnsExpected(object data)
         {
             Clipboard.SetDataObject(data);
-            Assert.Equal(data, Clipboard.GetDataObject().GetData(data.GetType()));
+            var dataObject = Clipboard.GetDataObject();
+            Assert.Equal(data, dataObject.GetData(data.GetType()));
             Assert.True(Clipboard.ContainsData(data.GetType().FullName));
         }
 
