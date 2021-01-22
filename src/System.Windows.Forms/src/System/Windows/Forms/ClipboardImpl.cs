@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
+using static Interop;
 using IComDataObject = System.Runtime.InteropServices.ComTypes.IDataObject;
 using IFormsDataObject = System.Windows.Forms.IDataObject;
 
@@ -341,35 +342,32 @@ namespace System.Windows.Forms
             return _instanceInSta;
         }
 
-        public void GetData(ref FORMATETC format, out STGMEDIUM medium)
+        public unsafe void GetData(ref FORMATETC format, out STGMEDIUM medium)
         {
-            unsafe
+            // Marshal
+            var stgmed = default(STGMEDIUM_Blittable);
+            medium = default;
+
+            // Dispatch
+            int hr;
+            (IntPtr instance, IntPtr vtable) = GetContextSafeRef(_agileInstance);
+            fixed (FORMATETC* formatFixed = &format)
             {
-                // Marshal
-                var stgmed = default(STGMEDIUM_Blittable);
-                medium = default;
+                hr = ((DataObjectVTable*)vtable)->GetData(instance, formatFixed, &stgmed);
+            }
+            Marshal.Release(instance);
 
-                // Dispatch
-                int hr;
-                (IntPtr instance, IntPtr vtable) = GetContextSafeRef(_agileInstance);
-                fixed (FORMATETC* formatFixed = &format)
-                {
-                    hr = ((DataObjectVTable*)vtable)->GetData(instance, formatFixed, &stgmed);
-                }
-                Marshal.Release(instance);
+            if (hr != 0)
+            {
+                Marshal.ThrowExceptionForHR(hr);
+            }
 
-                if (hr != 0)
-                {
-                    Marshal.ThrowExceptionForHR(hr);
-                }
-
-                // Unmarshal
-                medium.tymed = stgmed.tymed;
-                medium.unionmember = stgmed.unionmember;
-                if (stgmed.pUnkForRelease != IntPtr.Zero)
-                {
-                    medium.pUnkForRelease = Marshal.GetObjectForIUnknown(stgmed.pUnkForRelease);
-                }
+            // Unmarshal
+            medium.tymed = stgmed.tymed;
+            medium.unionmember = stgmed.unionmember;
+            if (stgmed.pUnkForRelease != IntPtr.Zero)
+            {
+                medium.pUnkForRelease = Marshal.GetObjectForIUnknown(stgmed.pUnkForRelease);
             }
         }
 
@@ -378,9 +376,65 @@ namespace System.Windows.Forms
             throw new NotImplementedException();
         }
 
-        public int QueryGetData(ref FORMATETC format)
+        public unsafe int QueryGetData(ref FORMATETC format)
         {
-            throw new NotImplementedException();
+            // Dispatch
+            int hr;
+            (IntPtr instance, IntPtr vtable) = GetContextSafeRef(_agileInstance);
+            fixed (FORMATETC* formatFixed = &format)
+            {
+                hr = ((DataObjectVTable*)vtable)->QueryGetData(instance, formatFixed);
+            }
+            Marshal.Release(instance);
+
+            if (hr != 0)
+            {
+                Marshal.ThrowExceptionForHR(hr);
+            }
+
+            if (format.dwAspect != DVASPECT.DVASPECT_CONTENT)
+            {
+                return (int)HRESULT.DV_E_DVASPECT;
+            }
+
+            if (!GetTymedUseable(format.tymed))
+            {
+                return (int)HRESULT.DV_E_TYMED;
+            }
+
+            if (format.cfFormat == 0)
+            {
+                return (int)HRESULT.S_FALSE;
+            }
+
+            //if (!GetDataPresent(DataFormats.GetFormat(format.cfFormat).Name))
+            //{
+            //    return (int)HRESULT.DV_E_FORMATETC;
+            //}
+
+            return (int)HRESULT.S_OK;
+        }
+
+        private static readonly TYMED[] ALLOWED_TYMEDS = new[]
+        {
+            TYMED.TYMED_HGLOBAL,
+            TYMED.TYMED_ISTREAM,
+            TYMED.TYMED_GDI
+        };
+
+        /// <summary>
+        ///  Returns true if the tymed is useable.
+        /// </summary>
+        private bool GetTymedUseable(TYMED tymed)
+        {
+            for (int i = 0; i < ALLOWED_TYMEDS.Length; i++)
+            {
+                if ((tymed & ALLOWED_TYMEDS[i]) != 0)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public int GetCanonicalFormatEtc(ref FORMATETC formatIn, out FORMATETC formatOut)
