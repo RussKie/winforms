@@ -275,7 +275,8 @@ namespace System.Windows.Forms
             (((GCHandle)lpRefData).Target as TaskDialog)!.HandleTaskDialogCallback(
                 hwnd,
                 msg,
-                wParam);
+                wParam,
+                lParam);
 
         private static bool IsTaskDialogButtonCommitting(TaskDialogButton? button)
         {
@@ -809,7 +810,8 @@ namespace System.Windows.Forms
         private HRESULT HandleTaskDialogCallback(
             IntPtr hWnd,
             ComCtl32.TDN notification,
-            IntPtr wParam)
+            IntPtr wParam,
+            IntPtr lParam)
         {
             Debug.Assert(_boundPage is not null);
 
@@ -1062,6 +1064,14 @@ namespace System.Windows.Forms
                     case ComCtl32.TDN.HELP:
                         _boundPage.OnHelpRequest(EventArgs.Empty);
                         break;
+
+                    case ComCtl32.TDN.HYPERLINK_CLICKED:
+                        {
+                            string linkId = Marshal.PtrToStringUni(lParam);
+                            TaskDialogLinkClickedEventArgs eventArgs = new(linkId);
+                            _boundPage.OnLinkClicked(eventArgs);
+                            break;
+                        }
                 }
             }
             catch (Exception ex) when (CanCatchCallbackException())

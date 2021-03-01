@@ -5,7 +5,9 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using static System.Windows.Forms.LinkLabel;
 using static Interop;
+using static Interop.User32;
 
 namespace System.Windows.Forms
 {
@@ -867,6 +869,11 @@ namespace System.Windows.Forms
             if (_boundCustomButtons.Any(e => e.IsCreated && e is TaskDialogCommandLinkButton))
                 flags |= ComCtl32.TDF.USE_COMMAND_LINKS;
 
+            if (EnableHyperLinks)
+            {
+                flags |= ComCtl32.TDF.ENABLE_HYPERLINKS;
+            }
+
             if (_checkBox is not null)
             {
                 flags |= _checkBox.Bind(this);
@@ -986,6 +993,25 @@ namespace System.Windows.Forms
         /// </summary>
         /// <param name="e">An <see cref="EventArgs"/> that contains the event data.</param>
         internal protected void OnHelpRequest(EventArgs e) => HelpRequest?.Invoke(this, e);
+
+        internal void OnLinkClicked(TaskDialogLinkClickedEventArgs e)
+        {
+            TaskDialogLink link = Links[e.LinkTarget];
+            link.OnClick(EventArgs.Empty);
+        }
+
+        private Dictionary<string, TaskDialogLink> Links { get; } = new();
+
+        protected bool EnableHyperLinks { get; set; }
+
+        public TaskDialogLink CreateLink(string text)
+        {
+            TaskDialogLink link = new(text);
+            Links[link.Id] = link;
+            EnableHyperLinks = true;
+
+            return link;
+        }
 
         private bool GetFlag(ComCtl32.TDF flag) => (_flags & flag) == flag;
 

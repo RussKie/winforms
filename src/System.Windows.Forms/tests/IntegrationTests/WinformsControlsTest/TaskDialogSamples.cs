@@ -46,6 +46,7 @@ namespace WinformsControlsTest
 
         private void ShowSimpleTaskDialog()
         {
+            /*
             // Show a message box.
             DialogResult messageBoxResult = MessageBox.Show(
                 this,
@@ -79,19 +80,38 @@ namespace WinformsControlsTest
             {
                 Console.WriteLine("User confirmed to stop the operation.");
             }
+            */
 
             // Show a task dialog (enhanced).
-            var page = new TaskDialogPage()
+            var page = new TaskDialogPage
             {
                 Heading = "Are you sure you want to stop?",
-                Text = "Stopping the operation might leave your database in a corrupted state.",
                 Caption = "Confirmation (Task Dialog)",
                 Icon = TaskDialogIcon.Warning,
                 AllowCancel = true,
 
-                Verification = new TaskDialogVerificationCheckBox()
+                // We can't create and reference links here :(
+                // Text = ????
+
+                Expander = new TaskDialogExpander
                 {
-                    Text = "Do not show again"
+                    Position = TaskDialogExpanderPosition.AfterText
+
+                    // We can't create and reference links here :(
+                    // Text = ????
+                },
+
+                Footnote = new TaskDialogFootnote
+                {
+                    Icon = TaskDialogIcon.Information
+
+                    // We can't create and reference links here :(
+                    // Text = ????
+                },
+
+                Verification = new TaskDialogVerificationCheckBox
+                {
+                    Text = "Do not show again" // doesn't support hyperlinks
                 },
 
                 Buttons =
@@ -102,6 +122,22 @@ namespace WinformsControlsTest
 
                 DefaultButton = TaskDialogButton.No
             };
+
+            // THIS IS CUMBERSOME!
+
+            TaskDialogLink link1 = page.CreateLink("Click me!");
+            link1.Click += (s, e) => Debug.WriteLine($"{nameof(link1)} was clicked");
+            page.Text = $"Stopping the operation might leave your database in a corrupted state. {link1}";
+
+            TaskDialogLink link2 = page.CreateLink("Click me!");
+            link2.Click += (s, e) => Debug.WriteLine($"{nameof(link2)} was clicked");
+            page.Expander.Text = $"No! {link2}";
+
+            TaskDialogLink link3 = page.CreateLink("Click me!");
+            link3.Click += (s, e) => Debug.WriteLine($"{nameof(link3)} was clicked");
+            page.Footnote.Text = $"{link3} in the footer";
+
+            // END THIS
 
             var resultButton = TaskDialog.ShowDialog(this, page);
 
