@@ -82,6 +82,10 @@ namespace WinformsControlsTest
             }
             */
 
+            string linkId1 = Guid.NewGuid().ToString();
+            string linkId2 = Guid.NewGuid().ToString();
+            string linkId3 = "https://localhost/";
+
             // Show a task dialog (enhanced).
             var page = new TaskDialogPage
             {
@@ -90,23 +94,19 @@ namespace WinformsControlsTest
                 Icon = TaskDialogIcon.Warning,
                 AllowCancel = true,
 
-                // We can't create and reference links here :(
-                // Text = ????
+                EnableHyperLinks = true,
+                Text = $"Stopping the operation might leave your database in a corrupted state. {TaskDialogPage.CreateLink(linkId1, "Click me!")}",
 
                 Expander = new TaskDialogExpander
                 {
-                    Position = TaskDialogExpanderPosition.AfterText
-
-                    // We can't create and reference links here :(
-                    // Text = ????
+                    Position = TaskDialogExpanderPosition.AfterText,
+                    Text = TaskDialogPage.CreateLink(linkId2, "Click me!")
                 },
 
                 Footnote = new TaskDialogFootnote
                 {
-                    Icon = TaskDialogIcon.Information
-
-                    // We can't create and reference links here :(
-                    // Text = ????
+                    Icon = TaskDialogIcon.Information,
+                    Text = $"{TaskDialogPage.CreateLink(linkId3, "Click me!")} in the footer",
                 },
 
                 Verification = new TaskDialogVerificationCheckBox
@@ -123,21 +123,21 @@ namespace WinformsControlsTest
                 DefaultButton = TaskDialogButton.No
             };
 
-            // THIS IS CUMBERSOME!
-
-            TaskDialogLink link1 = page.CreateLink("Click me!");
-            link1.Click += (s, e) => Debug.WriteLine($"{nameof(link1)} was clicked");
-            page.Text = $"Stopping the operation might leave your database in a corrupted state. {link1}";
-
-            TaskDialogLink link2 = page.CreateLink("Click me!");
-            link2.Click += (s, e) => Debug.WriteLine($"{nameof(link2)} was clicked");
-            page.Expander.Text = $"No! {link2}";
-
-            TaskDialogLink link3 = page.CreateLink("Click me!");
-            link3.Click += (s, e) => Debug.WriteLine($"{nameof(link3)} was clicked");
-            page.Footnote.Text = $"{link3} in the footer";
-
-            // END THIS
+            page.LinkClicked += (s, e) =>
+            {
+                if (e.LinkTarget == linkId1)
+                {
+                    Debug.WriteLine($"Clicked {nameof(linkId1)} -> {e.LinkTarget}");
+                }
+                else if (e.LinkTarget == linkId2)
+                {
+                    Debug.WriteLine($"Clicked {nameof(linkId2)} -> {e.LinkTarget}");
+                }
+                else if (e.LinkTarget == linkId3)
+                {
+                    Debug.WriteLine($"Clicked {nameof(linkId3)} -> {e.LinkTarget}");
+                }
+            };
 
             var resultButton = TaskDialog.ShowDialog(this, page);
 

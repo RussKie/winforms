@@ -994,25 +994,6 @@ namespace System.Windows.Forms
         /// <param name="e">An <see cref="EventArgs"/> that contains the event data.</param>
         internal protected void OnHelpRequest(EventArgs e) => HelpRequest?.Invoke(this, e);
 
-        internal void OnLinkClicked(TaskDialogLinkClickedEventArgs e)
-        {
-            TaskDialogLink link = Links[e.LinkTarget];
-            link.OnClick(EventArgs.Empty);
-        }
-
-        private Dictionary<string, TaskDialogLink> Links { get; } = new();
-
-        protected bool EnableHyperLinks { get; set; }
-
-        public TaskDialogLink CreateLink(string text)
-        {
-            TaskDialogLink link = new(text);
-            Links[link.Id] = link;
-            EnableHyperLinks = true;
-
-            return link;
-        }
-
         private bool GetFlag(ComCtl32.TDF flag) => (_flags & flag) == flag;
 
         private void SetFlag(ComCtl32.TDF flag, bool value)
@@ -1027,6 +1008,17 @@ namespace System.Windows.Forms
             {
                 _flags &= ~flag;
             }
+        }
+
+        public event EventHandler<TaskDialogLinkClickedEventArgs>? LinkClicked;
+
+        internal void OnLinkClicked(TaskDialogLinkClickedEventArgs e) => LinkClicked?.Invoke(this, e);
+
+        public bool EnableHyperLinks { get; set; }
+
+        public static string CreateLink(string target, string text)
+        {
+            return $"<A HREF=\"{target}\">{text}</A>"; /* render <A HREF="Id">Text</A> with necessary escaping */
         }
     }
 }
