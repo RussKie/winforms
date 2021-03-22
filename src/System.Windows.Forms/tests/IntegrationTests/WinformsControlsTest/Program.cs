@@ -17,7 +17,7 @@ namespace WinformsControlsTest
         [STAThread]
         static void Main()
         {
-            SourceGenerated.ProjectConfiguration.Initialize();
+            ProjectConfiguration.Initialize();
 
             Application.EnableVisualStyles();
             Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
