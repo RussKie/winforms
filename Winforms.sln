@@ -155,6 +155,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DesignSurfaceExt", "src\Sys
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MauiImageListTests", "src\System.Windows.Forms\tests\IntegrationTests\MauiTests\ImageListTests\MauiImageListTests.csproj", "{0B4C8C7D-6157-46D4-AC1E-DF27F96C7AF6}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Windows.Forms.SourceGenerators", "src\System.Windows.Forms.PublicSourceGenerators\src\System.Windows.Forms.SourceGenerators.csproj", "{3596BDE6-B211-4BE7-810D-DC7A4315E296}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -871,6 +873,10 @@ Global
 		{0B4C8C7D-6157-46D4-AC1E-DF27F96C7AF6}.Release|x64.Build.0 = Release|Any CPU
 		{0B4C8C7D-6157-46D4-AC1E-DF27F96C7AF6}.Release|x86.ActiveCfg = Release|Any CPU
 		{0B4C8C7D-6157-46D4-AC1E-DF27F96C7AF6}.Release|x86.Build.0 = Release|Any CPU
+		{3596BDE6-B211-4BE7-810D-DC7A4315E296}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3596BDE6-B211-4BE7-810D-DC7A4315E296}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3596BDE6-B211-4BE7-810D-DC7A4315E296}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3596BDE6-B211-4BE7-810D-DC7A4315E296}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -928,6 +934,7 @@ Global
 		{93310A19-DDCA-4BCD-AEDE-5C5D788DAFB4} = {43E46506-7DF8-4E7A-A579-996CA43041EB}
 		{E96C74BA-9F74-4289-BF72-45CAD472D3D2} = {43E46506-7DF8-4E7A-A579-996CA43041EB}
 		{0B4C8C7D-6157-46D4-AC1E-DF27F96C7AF6} = {8F20A905-BD37-4D80-B8DF-FA45276FC23F}
+		{3596BDE6-B211-4BE7-810D-DC7A4315E296} = {77FEDB47-F7F6-490D-AF7C-ABB4A9E0B9D7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7B1B0433-F612-4E5A-BE7E-FCF5B9F6E136}
