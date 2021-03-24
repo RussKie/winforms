@@ -157,6 +157,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MauiImageListTests", "src\S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Windows.Forms.SourceGenerators", "src\System.Windows.Forms.PublicSourceGenerators\src\System.Windows.Forms.SourceGenerators.csproj", "{3596BDE6-B211-4BE7-810D-DC7A4315E296}"
 EndProject
+Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "VbWinForms", "src\System.Windows.Forms\tests\IntegrationTests\VisualBasicTemplate\VbWinForms.vbproj", "{D7BE9BB1-9C04-4730-AEF8-A2DC6EBA6A41}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -707,6 +709,18 @@ Global
 		{83634671-CF3A-43B0-B729-42CCBA62DF2C}.Debug|x86.Build.0 = Debug|Any CPU
 		{83634671-CF3A-43B0-B729-42CCBA62DF2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83634671-CF3A-43B0-B729-42CCBA62DF2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C272DA06-B98D-4BB7-B1C4-ECF58F54B224}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{C272DA06-B98D-4BB7-B1C4-ECF58F54B224}.Debug|Any CPU.Build.0 = Debug|x86
+		{C272DA06-B98D-4BB7-B1C4-ECF58F54B224}.Release|Any CPU.ActiveCfg = Release|x86
+		{C272DA06-B98D-4BB7-B1C4-ECF58F54B224}.Release|Any CPU.Build.0 = Release|x86
+		{C272DA06-B98D-4BB7-B1C4-ECF58F54B224}.Debug|x86.ActiveCfg = Debug|x86
+		{C272DA06-B98D-4BB7-B1C4-ECF58F54B224}.Debug|x86.Build.0 = Debug|x86
+		{C272DA06-B98D-4BB7-B1C4-ECF58F54B224}.Release|x86.ActiveCfg = Release|x86
+		{C272DA06-B98D-4BB7-B1C4-ECF58F54B224}.Release|x86.Build.0 = Release|x86
+		{C272DA06-B98D-4BB7-B1C4-ECF58F54B224}.Debug|x64.ActiveCfg = Debug|x64
+		{C272DA06-B98D-4BB7-B1C4-ECF58F54B224}.Debug|x64.Build.0 = Debug|x64
+		{C272DA06-B98D-4BB7-B1C4-ECF58F54B224}.Release|x64.ActiveCfg = Release|x64
+		{C272DA06-B98D-4BB7-B1C4-ECF58F54B224}.Release|x64.Build.0 = Release|x64
 		{83634671-CF3A-43B0-B729-42CCBA62DF2C}.Release|arm64.ActiveCfg = Release|Any CPU
 		{83634671-CF3A-43B0-B729-42CCBA62DF2C}.Release|arm64.Build.0 = Release|Any CPU
 		{83634671-CF3A-43B0-B729-42CCBA62DF2C}.Release|x64.ActiveCfg = Release|Any CPU
@@ -729,6 +743,10 @@ Global
 		{C272DA06-B98D-4BB7-B1C4-ECF58F54B224}.Release|x64.Build.0 = Release|x64
 		{C272DA06-B98D-4BB7-B1C4-ECF58F54B224}.Release|x86.ActiveCfg = Release|x86
 		{C272DA06-B98D-4BB7-B1C4-ECF58F54B224}.Release|x86.Build.0 = Release|x86
+		{C272DA06-B98D-4BB7-B1C4-ECF58F54B224}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{C272DA06-B98D-4BB7-B1C4-ECF58F54B224}.Debug|Any CPU.Build.0 = Debug|x86
+		{C272DA06-B98D-4BB7-B1C4-ECF58F54B224}.Release|Any CPU.ActiveCfg = Release|x86
+		{C272DA06-B98D-4BB7-B1C4-ECF58F54B224}.Release|Any CPU.Build.0 = Release|x86
 		{2F0973AD-498D-45B6-82ED-CD672F7A03AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2F0973AD-498D-45B6-82ED-CD672F7A03AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F0973AD-498D-45B6-82ED-CD672F7A03AB}.Debug|arm64.ActiveCfg = Debug|Any CPU
@@ -877,6 +895,10 @@ Global
 		{3596BDE6-B211-4BE7-810D-DC7A4315E296}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3596BDE6-B211-4BE7-810D-DC7A4315E296}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3596BDE6-B211-4BE7-810D-DC7A4315E296}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7BE9BB1-9C04-4730-AEF8-A2DC6EBA6A41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7BE9BB1-9C04-4730-AEF8-A2DC6EBA6A41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7BE9BB1-9C04-4730-AEF8-A2DC6EBA6A41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7BE9BB1-9C04-4730-AEF8-A2DC6EBA6A41}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -935,6 +957,7 @@ Global
 		{E96C74BA-9F74-4289-BF72-45CAD472D3D2} = {43E46506-7DF8-4E7A-A579-996CA43041EB}
 		{0B4C8C7D-6157-46D4-AC1E-DF27F96C7AF6} = {8F20A905-BD37-4D80-B8DF-FA45276FC23F}
 		{3596BDE6-B211-4BE7-810D-DC7A4315E296} = {77FEDB47-F7F6-490D-AF7C-ABB4A9E0B9D7}
+		{D7BE9BB1-9C04-4730-AEF8-A2DC6EBA6A41} = {680FB14C-7B0C-4D63-9F1A-18ACCDB0F52A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7B1B0433-F612-4E5A-BE7E-FCF5B9F6E136}

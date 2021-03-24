@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Drawing;
+using System.Globalization;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -19,26 +19,26 @@ namespace WinformsControlsTest
         {
             ProjectConfiguration.Initialize();
 
-            //Application.EnableVisualStyles();
-            //Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
+            Application.EnableVisualStyles();
 
-            //Application.SetDefaultFont(new Font(new FontFamily("Microsoft Sans Serif"), 8f));
-            //Application.SetDefaultFont(new Font(new FontFamily("Chiller"), 12f));
-            //Application.SetDefaultFont(new Font(new FontFamily("Calibri"), 11f));
+            Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
 
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException); //UnhandledExceptionMode.ThrowException
-            Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
-            try
-            {
-                Application.Run(new MainForm());
-            }
-            catch (System.Exception)
-            {
-                Environment.Exit(-1);
-            }
+            Application.Run(new MainForm());
 
-            Environment.Exit(0);
+            ////Application.SetDefaultFont(new Font(....));
+
+            //Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException); //UnhandledExceptionMode.ThrowException
+            //Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
+            //try
+            //{
+            //}
+            //catch (System.Exception)
+            //{
+            //    Environment.Exit(-1);
+            //}
+
+            //Environment.Exit(0);
         }
     }
 }

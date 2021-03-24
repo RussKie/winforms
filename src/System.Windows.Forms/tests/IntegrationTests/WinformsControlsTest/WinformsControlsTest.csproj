@@ -10,6 +10,11 @@
     <EnableXlfLocalization>false</EnableXlfLocalization>
     <UpdateXlfOnBuild>false</UpdateXlfOnBuild>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+    <ApplicationVisualStyles>true</ApplicationVisualStyles>
+    <ApplicationFontName>Arial</ApplicationFontName>
+    <ApplicationFontSize>12</ApplicationFontSize>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
   </PropertyGroup>
 
   <ItemGroup>
