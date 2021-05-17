@@ -1,6 +1,13 @@
 <Project>
   <ItemGroup>
-    <CompilerVisibleProperty Include="A" />
+    <!-- Known Application properties -->
     <CompilerVisibleProperty Include="ApplicationManifest" />
+    <CompilerVisibleProperty Include="StartupObject" />
+
+    <!-- Custom Application properties -->
+    <CompilerVisibleProperty Include="ApplicationVisualStyles" />
+    <CompilerVisibleProperty Include="ApplicationFontName" />
+    <CompilerVisibleProperty Include="ApplicationFontSize" />
+    <CompilerVisibleProperty Include="ApplicationHighDpiMode" />
   </ItemGroup>
 </Project>

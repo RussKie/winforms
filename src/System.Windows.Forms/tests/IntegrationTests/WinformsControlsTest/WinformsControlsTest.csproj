@@ -5,7 +5,7 @@
     <RootNamespace>WinformsControlsTest</RootNamespace>
     <ApplicationIcon />
     <OutputType>WinExe</OutputType>
-    <StartupObject />
+    <StartupObject>WinformsControlsTest.Program</StartupObject>
     <ApplicationManifest>app1.manifest</ApplicationManifest>
     <EnableXlfLocalization>false</EnableXlfLocalization>
     <UpdateXlfOnBuild>false</UpdateXlfOnBuild>
@@ -16,17 +16,11 @@
     <ApplicationFontSize>12</ApplicationFontSize>
     <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
   </PropertyGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="project.json" />
-  </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\System.Design\src\System.Design.Facade.csproj" />
     <ProjectReference Include="..\..\..\..\System.Windows.Forms.Design\src\System.Windows.Forms.Design.csproj" />
-    <ProjectReference Include="..\..\..\..\System.Windows.Forms.PublicSourceGenerators\src\System.Windows.Forms.SourceGenerators.csproj"
-                      ReferenceOutputAssembly="false"
-                      OutputItemType="Analyzer" />
+    <ProjectReference Include="..\..\..\..\System.Windows.Forms.PublicSourceGenerators\src\System.Windows.Forms.SourceGenerators.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
     <ProjectReference Include="..\..\..\src\System.Windows.Forms.csproj" />
     <ProjectReference Include="..\System.Windows.Forms.IntegrationTests.Common\System.Windows.Forms.IntegrationTests.Common.csproj" />
   </ItemGroup>

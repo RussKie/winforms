@@ -17,15 +17,13 @@ namespace System.Windows.Forms
     [Generator]
     internal class ProjectConfigurationGenerator : ISourceGenerator
     {
-        private const string AppManifestExtension = ".manifest";
-
-        public void Execute(GeneratorExecutionContext context)
+        public void Execute1(GeneratorExecutionContext context)
         {
             Debugger.Launch();
             Debug.WriteLine(context);
         }
 
-        public void Execute1(GeneratorExecutionContext context)
+        public void Execute(GeneratorExecutionContext context)
         {
             if (context.SyntaxReceiver is not ProjectConfigurationSyntaxReceiver syntaxReceiver)
             {
@@ -39,35 +37,7 @@ namespace System.Windows.Forms
 
             if (!IsSupportedProjectType(context))
             {
-                context.ReportDiagnostic(Diagnostic.Create("WF0101", nameof(ProjectConfigurationGenerator),
-                    $"Only {nameof(OutputKind.WindowsApplication)} supported",
-                    severity: DiagnosticSeverity.Error,
-                    defaultSeverity: DiagnosticSeverity.Error,
-                    isEnabledByDefault: true,
-                    warningLevel: 0));
-                return;
-            }
-
-            if (!TryGetProjectRootPath(context, out string? projectRootPath))
-            {
-                context.ReportDiagnostic(Diagnostic.Create("WF0102", nameof(ProjectConfigurationGenerator),
-                    $"Failed to read 'build_property.projectdir' value",
-                    severity: DiagnosticSeverity.Warning,
-                    defaultSeverity: DiagnosticSeverity.Warning,
-                    isEnabledByDefault: true,
-                    warningLevel: 4));
-                return;
-            }
-
-            // We can't tag netstandard2.1 that supports [NotNullWhen(..)] decorations because VS runs on net48
-            if (!TryLocateProjectDefinitionFile(context, projectRootPath!, out AdditionalText? projectDefinitionFile))
-            {
-                context.ReportDiagnostic(Diagnostic.Create("WF0103", nameof(ProjectConfigurationGenerator),
-                    $"{projectRootPath}project.json not found",
-                    severity: DiagnosticSeverity.Error,
-                    defaultSeverity: DiagnosticSeverity.Error,
-                    isEnabledByDefault: true,
-                    warningLevel: 0));
+                context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.s_errorUnsupportedProjectType, Location.None));
                 return;
             }
 
@@ -80,19 +50,7 @@ namespace System.Windows.Forms
                 warningLevel: 4));
 #endif
 
-            ProjectConfigurationInfo? projectConfig = LoadProjectConfig(context, projectDefinitionFile!);
-            if (projectConfig is null)
-            {
-                context.ReportDiagnostic(Diagnostic.Create("WF0103", nameof(ProjectConfigurationGenerator),
-                    $"Failed to load '{projectDefinitionFile!.Path}' content",
-                    severity: DiagnosticSeverity.Error,
-                    defaultSeverity: DiagnosticSeverity.Error,
-                    isEnabledByDefault: true,
-                    warningLevel: 0,
-                    location: Location.Create(projectDefinitionFile.Path, default, default)));
-                return;
-            }
-
+            ProjectConfigurationInfo? projectConfig = new(); 
             string? code = ProjectConfigurationInitializeGenerator.GenerateInitialize(projectNamespace: GetNamespace(syntaxReceiver.Nodes[0]), projectConfig);
             if (code is not null)
             {
@@ -151,52 +109,8 @@ namespace System.Windows.Forms
         private bool IsSupportedProjectType(GeneratorExecutionContext context)
             => context.Compilation.Options.OutputKind == OutputKind.WindowsApplication;
 
-        private static ProjectConfigurationInfo? LoadProjectConfig(GeneratorExecutionContext context, AdditionalText projectDefinitionFile)
-        {
-            var json = projectDefinitionFile.GetText()!.ToString();
-            ProjectConfigurationInfo? projectConfig;
-            try
-            {
-                var serializeOptions = new JsonSerializerOptions
-                {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                };
-                projectConfig = JsonSerializer.Deserialize<ProjectConfigurationInfo>(json, serializeOptions);
-                return projectConfig;
-            }
-            catch (Exception ex)
-            {
-                context.ReportDiagnostic(Diagnostic.Create("WF0105", nameof(ProjectConfigurationGenerator),
-                    $"Failed to parse '{projectDefinitionFile.Path}' content: {ex.Message}",
-                    severity: DiagnosticSeverity.Error,
-                    defaultSeverity: DiagnosticSeverity.Error,
-                    isEnabledByDefault: true,
-                    warningLevel: 0,
-                    location: Location.Create(projectDefinitionFile.Path, default, default)));
-                return null;
-            }
-        }
-
         private static bool TryGetProjectRootPath(GeneratorExecutionContext context, out string? projectRootPath)
             => context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.projectdir", out projectRootPath) &&
                !string.IsNullOrEmpty(projectRootPath);
-
-        private static bool TryLocateProjectDefinitionFile(GeneratorExecutionContext context, string projectRootPath, out AdditionalText? projectDefinitionFile)
-        {
-            //string projectJsonFile = Path.Combine(projectRootPath, ProjectConfigurationFileName);
-
-            //foreach (AdditionalText additionalFile in context.AdditionalFiles)
-            //{
-            //    // TODO: linked files?
-            //    if (additionalFile.Path.Equals(projectJsonFile, StringComparison.OrdinalIgnoreCase))
-            //    {
-            //        projectDefinitionFile = additionalFile;
-            //        return true;
-            //    }
-            //}
-
-            projectDefinitionFile = null;
-            return false;
-        }
     }
 }

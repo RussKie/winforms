@@ -1,9 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <A>BOO</A>
-    <B>FOO</B>
     <ApplicationManifest>myapp.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ApplicationVisualStyles>true</ApplicationVisualStyles>
+    <ApplicationFontName>Consolas</ApplicationFontName>
+    <ApplicationFontSize>11</ApplicationFontSize>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
   </PropertyGroup>
 
   <ItemGroup>
