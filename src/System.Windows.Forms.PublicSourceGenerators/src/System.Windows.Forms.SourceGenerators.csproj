@@ -53,4 +53,9 @@
     </ItemGroup>
   </Target>
 
+  <ItemGroup>
+    <!-- Package the props file -->
+    <None Include="System.Windows.Forms.SourceGenerators.props" Pack="true" PackagePath="build" Visible="true" />
+  </ItemGroup>
+
 </Project>
