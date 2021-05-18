@@ -17,12 +17,6 @@ namespace System.Windows.Forms
     [Generator]
     internal class ProjectConfigurationGenerator : ISourceGenerator
     {
-        public void Execute1(GeneratorExecutionContext context)
-        {
-            Debugger.Launch();
-            Debug.WriteLine(context);
-        }
-
         public void Execute(GeneratorExecutionContext context)
         {
             if (context.SyntaxReceiver is not ProjectConfigurationSyntaxReceiver syntaxReceiver)
@@ -41,16 +35,12 @@ namespace System.Windows.Forms
                 return;
             }
 
-#if DEBUG
-            context.ReportDiagnostic(Diagnostic.Create("DBG", nameof(ProjectConfigurationGenerator),
-                "project.json found :)",
-                severity: DiagnosticSeverity.Info,
-                defaultSeverity: DiagnosticSeverity.Info,
-                isEnabledByDefault: true,
-                warningLevel: 4));
-#endif
+            ProjectConfigurationInfo? projectConfig = ReadApplicationConfig(context);
+            if (projectConfig is null)
+            {
+                return;
+            }
 
-            ProjectConfigurationInfo? projectConfig = new(); 
             string? code = ProjectConfigurationInitializeGenerator.GenerateInitialize(projectNamespace: GetNamespace(syntaxReceiver.Nodes[0]), projectConfig);
             if (code is not null)
             {
@@ -73,30 +63,24 @@ namespace System.Windows.Forms
 
         private bool HasValidSyntaxNode(GeneratorExecutionContext context, ProjectConfigurationSyntaxReceiver syntaxReceiver)
         {
-            if (syntaxReceiver.Nodes.Count == 0)
-            {
-#if DEBUG
-                context.ReportDiagnostic(Diagnostic.Create("DBG", nameof(ProjectConfigurationGenerator),
-                    $"Nothing to do", DiagnosticSeverity.Warning, DiagnosticSeverity.Warning, true, 4));
-#endif
-                return false;
-            }
-            else if (syntaxReceiver.Nodes.Count != 1)
+            Debugger.Launch();
+            if (syntaxReceiver.Nodes.Count != 1)
             {
                 foreach (SyntaxNode node in syntaxReceiver.Nodes)
                 {
-                    context.ReportDiagnostic(
-                        Diagnostic.Create("PC0", nameof(ProjectConfigurationGenerator),
-                            $"ProjectConfiguration.Initialize can only be used once per project",
-                            severity: DiagnosticSeverity.Error,
-                            defaultSeverity: DiagnosticSeverity.Error,
-                            isEnabledByDefault: true,
-                            warningLevel: 0,
-                            location: node.GetLocation()));
+                    context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.s_duplicateProjectConfigurationInitialize, node.GetLocation()));
                 }
 
                 return false;
             }
+#if DEBUG
+            else if (syntaxReceiver.Nodes.Count == 0)
+            {
+                context.ReportDiagnostic(Diagnostic.Create("WFPC-DBG", nameof(ProjectConfigurationGenerator),
+                    $"Opted out of ProjectConfiguration.Initialize experience", DiagnosticSeverity.Warning, DiagnosticSeverity.Warning, true, 4));
+                return false;
+            }
+#endif
 
             return true;
         }
@@ -109,8 +93,25 @@ namespace System.Windows.Forms
         private bool IsSupportedProjectType(GeneratorExecutionContext context)
             => context.Compilation.Options.OutputKind == OutputKind.WindowsApplication;
 
-        private static bool TryGetProjectRootPath(GeneratorExecutionContext context, out string? projectRootPath)
-            => context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.projectdir", out projectRootPath) &&
-               !string.IsNullOrEmpty(projectRootPath);
+        private ProjectConfigurationInfo? ReadApplicationConfig(GeneratorExecutionContext context)
+        {
+            ProjectConfigurationReader configurationReader = new();
+            if (!configurationReader.TryReadEnableVisualStyles(context, out bool enableVisualStyles) ||
+                !configurationReader.TryReadFontSize(context, out float? fontSize) ||
+                !configurationReader.TryReadHighDpiMode(context, out HighDpiMode highDpiMode))
+            {
+                return null;
+            }
+
+            ProjectConfigurationInfo projectConfig = new()
+            {
+                EnableVisualStyles = enableVisualStyles,
+                FontFamily = context.GetMSBuildProperty(ProjectConfigurationInfo.PropertyName.FontFamily, /* we want null */null!),
+                FontSize = fontSize,
+                HighDpiMode = highDpiMode,
+            };
+
+            return projectConfig;
+        }
     }
 }

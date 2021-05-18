@@ -26,8 +26,6 @@ namespace WinformsControlsTest
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainForm());
 
-            ////Application.SetDefaultFont(new Font(....));
-
             //Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException); //UnhandledExceptionMode.ThrowException
             //Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
             //try

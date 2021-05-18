@@ -12,8 +12,8 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
     <ApplicationVisualStyles>true</ApplicationVisualStyles>
-    <ApplicationFontName>Arial</ApplicationFontName>
-    <ApplicationFontSize>12</ApplicationFontSize>
+    <ApplicationFontName>Arial-bla</ApplicationFontName>
+    <ApplicationFontSize>1.2</ApplicationFontSize>
     <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
   </PropertyGroup>
   
@@ -24,6 +24,8 @@
     <ProjectReference Include="..\..\..\src\System.Windows.Forms.csproj" />
     <ProjectReference Include="..\System.Windows.Forms.IntegrationTests.Common\System.Windows.Forms.IntegrationTests.Common.csproj" />
   </ItemGroup>
+
+  <Import Project="..\..\..\..\System.Windows.Forms.PublicSourceGenerators\src\System.Windows.Forms.SourceGenerators.props" />
 
   <ItemGroup>
     <EmbeddedResource Include="Images\SmallA.bmp">

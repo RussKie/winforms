@@ -10,9 +10,7 @@ namespace System.Windows.Forms
     {
         public static string GenerateInitialize(string projectNamespace, ProjectConfigurationInfo projectConfig)
         {
-            bool visualStylesEnabled = GetVisualStylesEnabled(projectConfig);
             string? defaultFont = GetDefaultFont(projectConfig);
-            string highDpiMode = GetHighDpiMode(projectConfig);
 
             const string indent = "            ";
 
@@ -35,7 +33,7 @@ namespace {0}", projectNamespace);
         ///  Bootstrap the application as follows:
         ///  <code>");
 
-            if (visualStylesEnabled)
+            if (projectConfig.EnableVisualStyles)
             {
                 sb.AppendLine("        ///  Application.EnableVisualStyles();");
             }
@@ -45,17 +43,14 @@ namespace {0}", projectNamespace);
                 sb.AppendLine($"        ///  Application.SetDefaultFont({defaultFont});");
             }
 
-            if (visualStylesEnabled)
-            {
-                sb.AppendLine($"        ///  Application.SetHighDpiMode(HighDpiMode.{highDpiMode});");
-            }
+            sb.AppendLine($"        ///  Application.SetHighDpiMode(HighDpiMode.{projectConfig.HighDpiMode});");
 
             sb.AppendLine(@"        /// </code>
         /// </summary>
         public static void Initialize()
         {");
 
-            if (visualStylesEnabled)
+            if (projectConfig.EnableVisualStyles)
             {
                 sb.AppendLine($"{indent}Application.EnableVisualStyles();");
             }
@@ -65,7 +60,7 @@ namespace {0}", projectNamespace);
                 sb.AppendLine($"{indent}Application.SetDefaultFont({defaultFont});");
             }
 
-            sb.AppendLine($"{indent}Application.SetHighDpiMode(HighDpiMode.{highDpiMode});");
+            sb.AppendLine($"{indent}Application.SetHighDpiMode(HighDpiMode.{projectConfig.HighDpiMode});");
 
             sb.AppendLine(@"        }
     }
@@ -80,7 +75,6 @@ namespace {0}", projectNamespace);
                     string fontFamily = string.IsNullOrWhiteSpace(projectConfig.FontFamily)
                         ? "Control.DefaultFont.FontFamily"
                         : $"new FontFamily(\"{projectConfig.FontFamily}\")";
-                    // TODO: ensure positive, within certain range
                     float fontSize = projectConfig.FontSize ?? 9f;
 
                     return $"new Font({fontFamily}, {fontSize}f)";
@@ -88,23 +82,6 @@ namespace {0}", projectNamespace);
 
                 return null;
             }
-
-            static string GetHighDpiMode(ProjectConfigurationInfo projectConfig)
-            {
-                if (!string.IsNullOrWhiteSpace(projectConfig.HighDpiMode)
-                    && Enum.TryParse(projectConfig.HighDpiMode, ignoreCase: true, out HighDpiMode highDpiMode))
-                {
-                    return highDpiMode.ToString();
-                }
-                else
-                {
-                    return "PerMonitorV2";
-                }
-            }
-
-            static bool GetVisualStylesEnabled(ProjectConfigurationInfo projectConfig)
-                => projectConfig.EnableVisualStyles is null
-                || (bool.TryParse(projectConfig.EnableVisualStyles, out bool enableVisualStyles) && enableVisualStyles);
         }
     }
 }

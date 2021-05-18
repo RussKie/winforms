@@ -4,4 +4,6 @@
 ### New Rules
 Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
-WF0101 | ProjectConfigurationGenerator | Error | DiagnosticDescriptors
+WFPC0001 | ProjectConfigurationGenerator | Error | DiagnosticDescriptors
+WFPC0002 | ProjectConfigurationGenerator | Error | DiagnosticDescriptors
+WFPC0010 | ProjectConfigurationGenerator | Error | DiagnosticDescriptors
