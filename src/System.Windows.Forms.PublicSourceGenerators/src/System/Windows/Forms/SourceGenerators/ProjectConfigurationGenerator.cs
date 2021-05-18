@@ -63,7 +63,6 @@ namespace System.Windows.Forms
 
         private bool HasValidSyntaxNode(GeneratorExecutionContext context, ProjectConfigurationSyntaxReceiver syntaxReceiver)
         {
-            Debugger.Launch();
             if (syntaxReceiver.Nodes.Count != 1)
             {
                 foreach (SyntaxNode node in syntaxReceiver.Nodes)

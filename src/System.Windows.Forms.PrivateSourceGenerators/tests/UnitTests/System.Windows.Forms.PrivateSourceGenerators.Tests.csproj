@@ -1,20 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <ApplicationManifest>myapp.manifest</ApplicationManifest>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <ApplicationVisualStyles>true</ApplicationVisualStyles>
-    <ApplicationFontName>Consolas</ApplicationFontName>
-    <ApplicationFontSize>11</ApplicationFontSize>
-    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="EnumValidationTests.cs" />
-  </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="coverlet.msbuild" Version="$(CoverletMSBuildPackageVersion)" />
   </ItemGroup>
@@ -28,10 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\System.Windows.Forms.PublicSourceGenerators\src\System.Windows.Forms.SourceGenerators.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
     <ProjectReference Include="..\..\src\System.Windows.Forms.PrivateSourceGenerators.csproj" />
   </ItemGroup>
-
-  <Import Project="..\..\..\System.Windows.Forms.PublicSourceGenerators\src\System.Windows.Forms.SourceGenerators.props" />
 
 </Project>
