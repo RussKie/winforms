@@ -57,7 +57,15 @@ namespace System.Windows.Forms
 
         private bool HasValidSyntaxNode(GeneratorExecutionContext context, ProjectConfigurationSyntaxReceiver syntaxReceiver)
         {
-            if (syntaxReceiver.Nodes.Count != 1)
+#if DEBUG
+            if (syntaxReceiver.Nodes.Count == 0)
+            {
+                context.ReportDiagnostic(Diagnostic.Create("WFPC-DBG", nameof(ProjectConfigurationGenerator),
+                    $"Opted out of ProjectConfiguration.Initialize experience", DiagnosticSeverity.Info, DiagnosticSeverity.Info, true, 4));
+                return false;
+            }
+#endif
+            if (syntaxReceiver.Nodes.Count > 1)
             {
                 foreach (SyntaxNode node in syntaxReceiver.Nodes)
                 {
@@ -66,15 +74,8 @@ namespace System.Windows.Forms
 
                 return false;
             }
-#if DEBUG
-            else if (syntaxReceiver.Nodes.Count == 0)
-            {
-                context.ReportDiagnostic(Diagnostic.Create("WFPC-DBG", nameof(ProjectConfigurationGenerator),
-                    $"Opted out of ProjectConfiguration.Initialize experience", DiagnosticSeverity.Warning, DiagnosticSeverity.Warning, true, 4));
-                return false;
-            }
-#endif
 
+            // We have exactly one node - all good
             return true;
         }
 
