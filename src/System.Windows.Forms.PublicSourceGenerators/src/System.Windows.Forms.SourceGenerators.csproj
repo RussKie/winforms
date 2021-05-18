@@ -11,11 +11,11 @@
  </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.0">
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="$(MicrosoftCodeAnalysisAnalyzersVersion)">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.8.0-3.final" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(MicrosoftCodeAnalysisCSharpWorkspacesVersion)" />
   </ItemGroup>
 
   <!-- Generator dependencies: https://www.nuget.org/packages/System.Text.Json/5.0.0
@@ -25,7 +25,7 @@
     https://github.com/dotnet/roslyn/issues/43903
     https://github.com/dotnet/aspnetcore/issues/31065
   -->
-  <ItemGroup>
+  <!--<ItemGroup>
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="5.0.0" GeneratePathProperty="true" />
     <PackageReference Include="System.Buffers" Version="4.5.1" GeneratePathProperty="true" />
     <PackageReference Include="System.Memory" Version="4.5.4" GeneratePathProperty="true" />
@@ -51,7 +51,7 @@
       <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Text_Encodings_Web)\lib\netstandard2.0\System.Text.Encodings.Web.dll" IncludeRuntimeDependency="false" />
       <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Threading_Tasks_Extensions)\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll" IncludeRuntimeDependency="false" />
     </ItemGroup>
-  </Target>
+  </Target>-->
 
   <ItemGroup>
     <!-- Package the props file -->
