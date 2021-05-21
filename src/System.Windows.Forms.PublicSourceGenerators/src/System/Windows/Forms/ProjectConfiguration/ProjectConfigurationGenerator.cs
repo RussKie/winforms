@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -29,13 +30,15 @@ namespace System.Windows.Forms
                 return;
             }
 
+            new ExternalHighDpiSettingsVerifier().Verify(context);
+
             ProjectConfigurationInfo? projectConfig = ReadApplicationConfig(context);
             if (projectConfig is null)
             {
                 return;
             }
 
-            string? code = ProjectConfigurationInitializeGenerator.GenerateInitialize(projectNamespace: GetNamespace(syntaxReceiver.Nodes[0]), projectConfig);
+            string? code = ProjectConfigurationInitializeBuilder.GenerateInitialize(projectNamespace: GetNamespace(syntaxReceiver.Nodes[0]), projectConfig);
             if (code is not null)
             {
                 context.AddSource("ProjectConfiguration.g.cs", code);
@@ -89,7 +92,7 @@ namespace System.Windows.Forms
 
         private ProjectConfigurationInfo? ReadApplicationConfig(GeneratorExecutionContext context)
         {
-            ProjectConfigurationReader configurationReader = new();
+            ProjectFileReader configurationReader = new();
             if (!configurationReader.TryReadEnableVisualStyles(context, out bool enableVisualStyles) ||
                 !configurationReader.TryReadFontSize(context, out float? fontSize) ||
                 !configurationReader.TryReadHighDpiMode(context, out HighDpiMode highDpiMode))

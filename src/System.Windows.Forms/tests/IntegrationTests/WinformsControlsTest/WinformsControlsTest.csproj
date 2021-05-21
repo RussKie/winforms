@@ -6,14 +6,14 @@
     <ApplicationIcon />
     <OutputType>WinExe</OutputType>
     <StartupObject>WinformsControlsTest.Program</StartupObject>
-    <ApplicationManifest>app1.manifest</ApplicationManifest>
+    <!--<ApplicationManifest>app1.manifest</ApplicationManifest>-->
     <EnableXlfLocalization>false</EnableXlfLocalization>
     <UpdateXlfOnBuild>false</UpdateXlfOnBuild>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
     <ApplicationVisualStyles>true</ApplicationVisualStyles>
-    <ApplicationFontName>Arial-bla</ApplicationFontName>
-    <ApplicationFontSize>1.2</ApplicationFontSize>
+    <ApplicationFontName>Arial</ApplicationFontName>
+    <ApplicationFontSize>12</ApplicationFontSize>
     <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
   </PropertyGroup>
   

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace System.Windows.Forms
 {
-    internal class ProjectConfigurationInitializeGenerator
+    internal class ProjectConfigurationInitializeBuilder
     {
         public static string GenerateInitialize(string projectNamespace, ProjectConfigurationInfo projectConfig)
         {

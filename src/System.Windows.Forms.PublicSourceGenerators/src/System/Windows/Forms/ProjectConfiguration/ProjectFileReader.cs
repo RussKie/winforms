@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 
 namespace System.Windows.Forms
 {
-    internal sealed class ProjectConfigurationReader
+    internal sealed class ProjectFileReader
     {
         private const string AbsentValue = "!@#$%";
 

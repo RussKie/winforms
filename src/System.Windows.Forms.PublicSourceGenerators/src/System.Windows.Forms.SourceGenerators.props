@@ -9,5 +9,9 @@
     <CompilerVisibleProperty Include="ApplicationFontName" />
     <CompilerVisibleProperty Include="ApplicationFontSize" />
     <CompilerVisibleProperty Include="ApplicationHighDpiMode" />
+
+    <!-- If there is an app.manifest - let the generator explore it -->
+    <AdditionalFiles Include="$(ApplicationManifest)" Condition="'$(ApplicationManifest)' != ''" />
+
   </ItemGroup>
 </Project>

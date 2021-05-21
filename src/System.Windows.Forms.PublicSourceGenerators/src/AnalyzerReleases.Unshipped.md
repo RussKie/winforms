@@ -6,4 +6,5 @@ Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
 WFPC0001 | ProjectConfigurationGenerator | Error | DiagnosticDescriptors
 WFPC0002 | ProjectConfigurationGenerator | Error | DiagnosticDescriptors
+WFPC0003 | ProjectConfigurationGenerator | Error | DiagnosticDescriptors
 WFPC0010 | ProjectConfigurationGenerator | Error | DiagnosticDescriptors

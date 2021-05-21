@@ -7,7 +7,7 @@
   </PropertyGroup>
 
  <ItemGroup>
-   <Compile Include="..\..\System.Windows.Forms.Primitives\src\System\Windows\Forms\HighDpiMode.cs" Link="System\Windows\Forms\SourceGenerators\HighDpiMode.cs" />
+   <Compile Include="..\..\System.Windows.Forms.Primitives\src\System\Windows\Forms\HighDpiMode.cs" Link="System\Windows\Forms\HighDpiMode.cs" />
  </ItemGroup>
 
   <ItemGroup>

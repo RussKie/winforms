@@ -68,6 +68,11 @@
     <XUnitExtensibilityExecutionVersion>$(XUnitVersion)</XUnitExtensibilityExecutionVersion>
     <XUnitStaFactPackageVersion>1.0.33-beta</XUnitStaFactPackageVersion>
   </PropertyGroup>
+  <!-- Test related -->
+  <PropertyGroup>
+    <ApprovalTestsVersion>5.4.5</ApprovalTestsVersion>
+    <MoqPackageVersion>4.10.0</MoqPackageVersion>
+  </PropertyGroup>
   <!-- Code Coverage -->
   <PropertyGroup>
     <CoverletMSBuildPackageVersion>2.7.0</CoverletMSBuildPackageVersion>
@@ -84,7 +89,6 @@
   </PropertyGroup>
   <!-- Additional unchanging dependencies -->
   <PropertyGroup>
-    <MoqPackageVersion>4.10.0</MoqPackageVersion>
     <MicrosoftTargetingPackNETFrameworkv472PackageVersion>1.0.0</MicrosoftTargetingPackNETFrameworkv472PackageVersion>
     <MicrosoftWindowsDesktopAppRefv30PackageVersion>3.0.0</MicrosoftWindowsDesktopAppRefv30PackageVersion>
     <NewtonsoftJsonVersion>9.0.1</NewtonsoftJsonVersion>

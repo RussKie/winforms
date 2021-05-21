@@ -7,6 +7,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using ApprovalTests;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
@@ -106,6 +107,29 @@ namespace People
         }
 
         [Fact]
+        public void ProjectConfigurationGenerator_fail_if_contains_manifest_with_dpi_config()
+        {
+            string source = @"
+namespace People
+{
+    class C
+    {
+        void Start()
+        {
+             ProjectConfiguration.Initialize();
+        }
+    }
+}";
+
+            (Compilation outputCompilation, ImmutableArray<Diagnostic> diagnostics) result = CompileCsharp(source, OutputKind.WindowsApplication);
+            Assert.Equal(0, result.diagnostics.Length);
+
+            string output = result.outputCompilation.SyntaxTrees.Skip(1).First().ToString();
+
+            Approvals.Verify(output);
+        }
+
+        [Fact]
         public void ProjectConfigurationGenerator_emit_correct_default_bootstrap()
         {
             string source = @"
@@ -121,11 +145,11 @@ namespace People
 }";
 
             (Compilation outputCompilation, ImmutableArray<Diagnostic> diagnostics) result = CompileCsharp(source, OutputKind.WindowsApplication);
-
             Assert.Equal(0, result.diagnostics.Length);
 
             string output = result.outputCompilation.SyntaxTrees.Skip(1).First().ToString();
 
+            Approvals.Verify(output);
         }
 
         private (Compilation outputCompilation, ImmutableArray<Diagnostic> diagnostics) CompileCsharp(string source, OutputKind outputKind)
@@ -149,7 +173,8 @@ namespace People
 
             ISourceGenerator generator = new ProjectConfigurationGenerator();
 
-            CSharpGeneratorDriver driver = CSharpGeneratorDriver.Create(generator);
+            CSharpGeneratorDriver driver = CSharpGeneratorDriver.Create(generator
+                );
             driver.RunGeneratorsAndUpdateCompilation(compilation, out Compilation outputCompilation, out ImmutableArray<Diagnostic> diagnostics);
 
             return (outputCompilation, diagnostics);

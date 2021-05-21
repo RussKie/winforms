@@ -24,6 +24,14 @@ namespace System.Windows.Forms
                   defaultSeverity: DiagnosticSeverity.Error,
                   isEnabledByDefault: true);
 
+        public static readonly DiagnosticDescriptor s_migrateHighDpiSettings
+            = new(id: "WFPC0003",
+                  title: "Unsupported high DPI configuration",
+                  messageFormat: "Remove high DPI settings from {0} and configure via '{1}' project property",
+                  category: nameof(ProjectConfigurationGenerator),
+                  defaultSeverity: DiagnosticSeverity.Error,
+                  isEnabledByDefault: true);
+
         public static readonly DiagnosticDescriptor s_duplicateProjectConfigurationInitialize
             = new(id: "WFPC0010",
                   title: "Invalid code",
