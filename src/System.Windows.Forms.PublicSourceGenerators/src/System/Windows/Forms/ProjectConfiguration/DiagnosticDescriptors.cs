@@ -9,7 +9,7 @@ namespace System.Windows.Forms
     internal static class DiagnosticDescriptors
     {
         public static readonly DiagnosticDescriptor s_errorUnsupportedProjectType
-            = new(id: "WFPC0001",
+            = new(id: "WFPC001",
                   title: "Unsupported project type",
                   messageFormat: $"Only projects with 'OutputType={nameof(OutputKind.WindowsApplication)}' supported",
                   category: nameof(ProjectConfigurationGenerator),
@@ -17,7 +17,7 @@ namespace System.Windows.Forms
                   isEnabledByDefault: true);
 
         public static readonly DiagnosticDescriptor s_propertyCantBeSetToValue
-            = new(id: "WFPC0002",
+            = new(id: "WFPC002",
                   title: "Unsupported property value",
                   messageFormat: "ArgumentException: Project property '{0}' cannot be set to '{1}'",
                   category: nameof(ProjectConfigurationGenerator),
@@ -25,7 +25,7 @@ namespace System.Windows.Forms
                   isEnabledByDefault: true);
 
         public static readonly DiagnosticDescriptor s_migrateHighDpiSettings
-            = new(id: "WFPC0003",
+            = new(id: "WFPC003",
                   title: "Unsupported high DPI configuration",
                   messageFormat: "Remove high DPI settings from {0} and configure via '{1}' project property",
                   category: nameof(ProjectConfigurationGenerator),
@@ -33,7 +33,7 @@ namespace System.Windows.Forms
                   isEnabledByDefault: true);
 
         public static readonly DiagnosticDescriptor s_duplicateProjectConfigurationInitialize
-            = new(id: "WFPC0010",
+            = new(id: "WFPC010",
                   title: "Invalid code",
                   messageFormat: "ProjectConfiguration.Initialize can only be used once per project",
                   category: nameof(ProjectConfigurationGenerator),

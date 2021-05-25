@@ -173,8 +173,7 @@ namespace People
 
             ISourceGenerator generator = new ProjectConfigurationGenerator();
 
-            CSharpGeneratorDriver driver = CSharpGeneratorDriver.Create(generator
-                );
+            CSharpGeneratorDriver driver = CSharpGeneratorDriver.Create(generator);
             driver.RunGeneratorsAndUpdateCompilation(compilation, out Compilation outputCompilation, out ImmutableArray<Diagnostic> diagnostics);
 
             return (outputCompilation, diagnostics);

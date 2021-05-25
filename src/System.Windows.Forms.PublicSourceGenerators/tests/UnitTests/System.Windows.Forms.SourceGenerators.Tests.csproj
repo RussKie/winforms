@@ -19,4 +19,16 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\System.Windows.Forms.SourceGenerators.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="System\Windows\Forms\MockData\dpi.manifest">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="System\Windows\Forms\MockData\invalid.manifest">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="System\Windows\Forms\MockData\nodpi.manifest">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
