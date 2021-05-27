@@ -5,25 +5,24 @@
     <RootNamespace>WinformsControlsTest</RootNamespace>
     <ApplicationIcon />
     <OutputType>WinExe</OutputType>
-    <StartupObject />
+    <StartupObject></StartupObject>
     <ApplicationManifest>app1.manifest</ApplicationManifest>
     <EnableXlfLocalization>false</EnableXlfLocalization>
     <UpdateXlfOnBuild>false</UpdateXlfOnBuild>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-
-  <PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^netcoreapp\d'))">
-    <DefineConstants>NETCORE</DefineConstants>
-  </PropertyGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\System.Design\src\System.Design.Facade.csproj" />
     <ProjectReference Include="..\..\..\..\System.Windows.Forms.Design\src\System.Windows.Forms.Design.csproj" />
+    <ProjectReference Include="..\..\..\..\System.Windows.Forms.Analyzers\src\System.Windows.Forms.Analyzers.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\..\..\..\System.Windows.Forms.Analyzers.CSharp\src\System.Windows.Forms.Analyzers.CSharp.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
     <ProjectReference Include="..\..\..\src\System.Windows.Forms.csproj" />
     <ProjectReference Include="..\System.Windows.Forms.IntegrationTests.Common\System.Windows.Forms.IntegrationTests.Common.csproj" />
   </ItemGroup>
 
-  
+  <Import Project="..\..\..\..\System.Windows.Forms.Analyzers\src\System.Windows.Forms.Analyzers.props" />
+
   <ItemGroup>
     <EmbeddedResource Include="Images\SmallA.bmp">
       <LogicalName>WinformsControlsTest.SmallA.bmp</LogicalName>

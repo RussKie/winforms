@@ -1,0 +1,17 @@
+<Project>
+  <ItemGroup>
+    <!-- Known Application properties -->
+    <CompilerVisibleProperty Include="ApplicationManifest" />
+
+    <!-- Custom Application properties -->
+    <CompilerVisibleProperty Include="ApplicationFontName" />
+    <CompilerVisibleProperty Include="ApplicationFontSize" />
+    <CompilerVisibleProperty Include="ApplicationHighDpiMode" />
+    <CompilerVisibleProperty Include="ApplicationUseCompatibleTextRendering" />
+    <CompilerVisibleProperty Include="ApplicationVisualStyles" />
+
+    <!-- If there is an app.manifest - let the generator explore it -->
+    <AdditionalFiles Include="$(ApplicationManifest)" Condition="'$(ApplicationManifest)' != ''" />
+
+  </ItemGroup>
+</Project>

@@ -4,8 +4,11 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>Preview</LangVersion>
     <Nullable>enable</Nullable>
-    <NoWarn>$(NoWarn);RS1024</NoWarn>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\System.Windows.Forms.Primitives\src\System\Windows\Forms\HighDpiMode.cs" Link="System\Windows\Forms\HighDpiMode.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="$(MicrosoftCodeAnalysisAnalyzersVersion)">
@@ -13,6 +16,12 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(MicrosoftCodeAnalysisCSharpWorkspacesVersion)" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="$(MicrosoftCodeAnalysisVisualBasicWorkspacesVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Package the props file -->
+    <None Include="System.Windows.Forms.Analyzers.props" Pack="true" PackagePath="build" Visible="true" />
   </ItemGroup>
 
 </Project>
