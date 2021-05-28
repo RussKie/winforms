@@ -70,7 +70,7 @@
   </PropertyGroup>
   <!-- Test related -->
   <PropertyGroup>
-    <ApprovalTestsVersion>5.4.5</ApprovalTestsVersion>
+    <ApprovalTestsVersion>5.5.0</ApprovalTestsVersion>
     <MoqPackageVersion>4.10.0</MoqPackageVersion>
   </PropertyGroup>
   <!-- Code Coverage -->
