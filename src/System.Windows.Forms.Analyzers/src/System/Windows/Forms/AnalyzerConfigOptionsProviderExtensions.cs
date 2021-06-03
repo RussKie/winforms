@@ -5,7 +5,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace System.Windows.Forms.Analyzers.Generators
+namespace System.Windows.Forms.Analyzers
 {
     internal static class AnalyzerConfigOptionsProviderExtensions
     {
