@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -17,15 +16,9 @@ namespace WinformsControlsTest
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
+            ApplicationConfiguration.Initialize();
 
-            //Application.SetDefaultFont(new Font(new FontFamily("Microsoft Sans Serif"), 8f));
-            //Application.SetDefaultFont(new Font(new FontFamily("Chiller"), 12f));
-            Application.SetDefaultFont(new Font(new FontFamily("Calibri"), 11f));
-
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException); //UnhandledExceptionMode.ThrowException
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
             Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
             try
             {
