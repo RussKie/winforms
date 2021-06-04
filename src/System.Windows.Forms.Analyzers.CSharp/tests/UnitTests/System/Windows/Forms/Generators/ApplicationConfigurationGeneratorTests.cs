@@ -28,7 +28,7 @@ namespace System.Windows.Forms.Analyzers.Generators.Tests
         }
 
         [Fact]
-        public void ProjectConfigurationGenerator_fail_if_project_type_unsupported()
+        public Task ProjectConfigurationGenerator_fail_if_project_type_unsupported()
         {
             string source = @"
 namespace People
@@ -42,15 +42,13 @@ namespace People
     }
 }";
 
-            (Compilation _, ImmutableArray<Diagnostic> diagnostics) result = CompileCsharp(source, OutputKind.DynamicallyLinkedLibrary);
+            GeneratorDriver result = CompileCsharp(source, OutputKind.WindowsApplication);
 
-            Assert.Equal(1, result.diagnostics.Length);
-            Assert.Equal(DiagnosticDescriptors.s_errorUnsupportedProjectType, result.diagnostics[0].Descriptor);
-            Assert.Equal(Location.None, result.diagnostics[0].Location);
+            return Verifier.Verify(result);
         }
 
         [Fact]
-        public void ProjectConfigurationGenerator_pass_if_project_type_WindowsApplication()
+        public Task ProjectConfigurationGenerator_pass_if_project_type_WindowsApplication()
         {
             string source = @"
 namespace People
@@ -64,9 +62,9 @@ namespace People
     }
 }";
 
-            (Compilation _, ImmutableArray<Diagnostic> diagnostics) result = CompileCsharp(source, OutputKind.WindowsApplication);
+            GeneratorDriver result = CompileCsharp(source, OutputKind.WindowsApplication);
 
-            Assert.Equal(0, result.diagnostics.Length);
+            return Verifier.Verify(result);
         }
 
         [Fact]
@@ -84,23 +82,12 @@ namespace People
     }
 }";
 
-            (Compilation outputCompilation, ImmutableArray<Diagnostic> diagnostics) result = CompileCsharp(source, OutputKind.WindowsApplication);
+            GeneratorDriver result = CompileCsharp(source, OutputKind.WindowsApplication);
 
-            if (!result.diagnostics.IsEmpty)
-            {
-                foreach (Diagnostic d in result.diagnostics)
-                {
-                    _output.WriteLine(d.ToString());
-                }
-            }
-
-            Assert.Equal(0, result.diagnostics.Length);
-
-            string output = result.outputCompilation.SyntaxTrees.Skip(1).First().ToString();
-            return Verifier.Verify(output);
+            return Verifier.Verify(result);
         }
 
-        private (Compilation outputCompilation, ImmutableArray<Diagnostic> diagnostics) CompileCsharp(string source, OutputKind outputKind, CompilerAnalyzerConfigOptions configOptions = null)
+        private GeneratorDriver CompileCsharp(string source, OutputKind outputKind, CompilerAnalyzerConfigOptions configOptions = null)
         {
             SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(source);
 
@@ -127,9 +114,7 @@ namespace People
                                                                      references,
                                                                      new CSharpCompilationOptions(outputKind));
 
-            driver.RunGeneratorsAndUpdateCompilation(compilation, out Compilation outputCompilation, out ImmutableArray<Diagnostic> diagnostics);
-
-            return (outputCompilation, diagnostics);
+            return driver.RunGenerators(compilation);
         }
     }
 }

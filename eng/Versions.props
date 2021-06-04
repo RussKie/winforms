@@ -46,7 +46,7 @@
     <MicrosoftNETCoreILAsmPackageVersion>6.0.0-preview.6.21275.1</MicrosoftNETCoreILAsmPackageVersion>
     <runtimewinx64MicrosoftNETCoreILAsmPackageVersion>6.0.0-preview.6.21275.1</runtimewinx64MicrosoftNETCoreILAsmPackageVersion>
     <runtimewinx86MicrosoftNETCoreILAsmPackageVersion>6.0.0-preview.6.21275.1</runtimewinx86MicrosoftNETCoreILAsmPackageVersion>
-    <!-- 
+    <!--
       Microsoft.NET.Sdk.IL.targets requires definition of MicrosoftNETCoreILAsmVersion
     -->
     <MicrosoftNETCoreILAsmVersion>$(MicrosoftNETCoreILAsmPackageVersion)</MicrosoftNETCoreILAsmVersion>
@@ -71,6 +71,7 @@
   <!-- Test related -->
   <PropertyGroup>
     <VerifyXunitVersion>11.18.1</VerifyXunitVersion>
+    <VerifySourceGeneratorsVersion>0.3.0</VerifySourceGeneratorsVersion>
     <MoqPackageVersion>4.10.0</MoqPackageVersion>
   </PropertyGroup>
   <!-- Code Coverage -->

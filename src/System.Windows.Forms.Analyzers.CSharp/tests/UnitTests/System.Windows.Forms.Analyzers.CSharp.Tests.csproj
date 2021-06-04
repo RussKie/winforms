@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <PackageReference Include="Verify.Xunit" Version="$(VerifyXunitVersion)" />
+    <PackageReference Include="Verify.SourceGenerators" Version="$(VerifySourceGeneratorsVersion)" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="$(MicrosoftCodeAnalysisAnalyzersVersion)">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
