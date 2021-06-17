@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>NativeHost</AssemblyName>
+    <Platforms>x86;x64</Platforms>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <Import Project="ProjectReference.targets" Sdk="Microsoft.DotNet.CMake.Sdk" />
+
+  <ItemGroup>
+    <NativeProjectReference Include="NativeHost\CMakeLists.txt" CMakeProject="NativeHost\NativeHost.proj" BuildNative="true" />
+  </ItemGroup>
+
+</Project>
