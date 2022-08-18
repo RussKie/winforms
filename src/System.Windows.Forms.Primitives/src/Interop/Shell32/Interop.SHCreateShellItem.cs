@@ -13,10 +13,10 @@ internal static partial class Interop
 
         public static IShellItem GetShellItemForPath(string path)
         {
-            if (SHParseDisplayName(path, IntPtr.Zero, out IntPtr pidl, 0, out uint _).Succeeded())
+            if (SHParseDisplayName(path, IntPtr.Zero, out IntPtr pidl, 0, out uint _).Succeeded)
             {
                 // No parent specified
-                if (SHCreateShellItem(IntPtr.Zero, IntPtr.Zero, pidl, out IntPtr ret).Succeeded())
+                if (SHCreateShellItem(IntPtr.Zero, IntPtr.Zero, pidl, out IntPtr ret).Succeeded)
                 {
                     var obj = WinFormsComWrappers.Instance
                         .GetOrCreateObjectForComInstance(ret, CreateObjectFlags.None);

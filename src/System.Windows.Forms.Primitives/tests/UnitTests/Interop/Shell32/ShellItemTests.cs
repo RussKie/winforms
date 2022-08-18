@@ -18,7 +18,7 @@ namespace System.Windows.Forms.Tests.Interop.Shell32Tests
             HRESULT result = Shell32.SHParseDisplayName(path, IntPtr.Zero, out IntPtr ppidl, 0, out rgflnOut);
             try
             {
-                Assert.Equal(HRESULT.S_OK, result);
+                Assert.Equal(HRESULT.Values.S_OK, result);
                 Assert.NotEqual(IntPtr.Zero, ppidl);
             }
             finally
