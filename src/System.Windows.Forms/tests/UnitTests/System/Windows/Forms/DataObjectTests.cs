@@ -1640,7 +1640,7 @@ namespace System.Windows.Forms.Tests
                 // do not check the requested storage medium, we always return a metafile handle, thats what Office does
 
                 if (format.cfFormat != (short)CF.ENHMETAFILE || format.dwAspect != DVASPECT.DVASPECT_CONTENT || format.lindex != -1)
-                    return (int)HRESULT.Values.DV_E_FORMATETC;
+                    return (int)HResult.DV_E_FORMATETC;
 
                 return 0;
             }
@@ -1669,7 +1669,7 @@ namespace System.Windows.Forms.Tests
             var dataObject = new DataObject();
             IComDataObject comDataObject = dataObject;
             var formatetc = new FORMATETC();
-            Assert.Equal(HRESULT.Values.E_NOTIMPL, (HRESULT)comDataObject.DAdvise(ref formatetc, advf, adviseSink, out int connection));
+            Assert.Equal(HResult.E_NOTIMPL, (HRESULT)comDataObject.DAdvise(ref formatetc, advf, adviseSink, out int connection));
             Assert.Equal(0, connection);
         }
 
@@ -1727,7 +1727,7 @@ namespace System.Windows.Forms.Tests
         {
             var dataObject = new DataObject();
             IComDataObject comDataObject = dataObject;
-            Assert.Equal(HRESULT.Values.OLE_E_ADVISENOTSUPPORTED, (HRESULT)comDataObject.EnumDAdvise(out IEnumSTATDATA enumAdvise));
+            Assert.Equal(HResult.OLE_E_ADVISENOTSUPPORTED, (HRESULT)comDataObject.EnumDAdvise(out IEnumSTATDATA enumAdvise));
             Assert.Null(enumAdvise);
         }
 
@@ -1782,13 +1782,13 @@ namespace System.Windows.Forms.Tests
 
             for (int i = 0; i < 2; i++)
             {
-                Assert.Equal(HRESULT.Values.S_FALSE, (HRESULT)enumerator.Next(celt, result, fetched));
+                Assert.Equal(HResult.S_FALSE, (HRESULT)enumerator.Next(celt, result, fetched));
                 Assert.Equal(0, result[0].cfFormat);
                 Assert.Equal(0, fetched[0]);
 
-                Assert.Equal(HRESULT.Values.S_FALSE, (HRESULT)enumerator.Next(celt, null, null));
+                Assert.Equal(HResult.S_FALSE, (HRESULT)enumerator.Next(celt, null, null));
 
-                Assert.Equal(HRESULT.Values.S_OK, (HRESULT)enumerator.Reset());
+                Assert.Equal(HResult.S_OK, (HRESULT)enumerator.Reset());
             }
         }
 
@@ -1838,22 +1838,22 @@ namespace System.Windows.Forms.Tests
             for (int i = 0; i < 1; i++)
             {
                 // Fetch nothing.
-                Assert.Equal(HRESULT.Values.S_FALSE, (HRESULT)enumerator.Next(0, result, fetched));
+                Assert.Equal(HResult.S_FALSE, (HRESULT)enumerator.Next(0, result, fetched));
                 Assert.Equal(0, fetched[0]);
 
-                Assert.Equal(HRESULT.Values.S_FALSE, (HRESULT)enumerator.Next(0, null, null));
+                Assert.Equal(HResult.S_FALSE, (HRESULT)enumerator.Next(0, null, null));
 
                 // Fetch negative.
-                Assert.Equal(HRESULT.Values.S_FALSE, (HRESULT)enumerator.Next(-1, result, fetched));
+                Assert.Equal(HResult.S_FALSE, (HRESULT)enumerator.Next(-1, result, fetched));
                 Assert.Equal(0, fetched[0]);
 
-                Assert.Equal(HRESULT.Values.S_FALSE, (HRESULT)enumerator.Next(-1, null, null));
+                Assert.Equal(HResult.S_FALSE, (HRESULT)enumerator.Next(-1, null, null));
 
                 // Null.
                 Assert.Throws<NullReferenceException>(() => enumerator.Next(1, null, fetched));
 
                 // Fetch first.
-                Assert.Equal(HRESULT.Values.S_OK, (HRESULT)enumerator.Next(i + 1, result, fetched));
+                Assert.Equal(HResult.S_OK, (HRESULT)enumerator.Next(i + 1, result, fetched));
                 Assert.Equal(unchecked((short)(ushort)(DataFormats.GetFormat(format1).Id)), result[0].cfFormat);
                 Assert.Equal(DVASPECT.DVASPECT_CONTENT, result[0].dwAspect);
                 Assert.Equal(-1, result[0].lindex);
@@ -1863,7 +1863,7 @@ namespace System.Windows.Forms.Tests
                 Assert.Equal(1, fetched[0]);
 
                 // Fetch second.
-                Assert.Equal(HRESULT.Values.S_OK, (HRESULT)enumerator.Next(i + 1, result, fetched));
+                Assert.Equal(HResult.S_OK, (HRESULT)enumerator.Next(i + 1, result, fetched));
                 Assert.NotEqual(0, result[0].cfFormat);
                 Assert.Equal(DVASPECT.DVASPECT_CONTENT, result[0].dwAspect);
                 Assert.Equal(-1, result[0].lindex);
@@ -1873,11 +1873,11 @@ namespace System.Windows.Forms.Tests
                 Assert.Equal(1, fetched[0]);
 
                 // Fetch another.
-                Assert.Equal(HRESULT.Values.S_FALSE, (HRESULT)enumerator.Next(1, null, null));
-                Assert.Equal(HRESULT.Values.S_FALSE, (HRESULT)enumerator.Next(1, null, null));
+                Assert.Equal(HResult.S_FALSE, (HRESULT)enumerator.Next(1, null, null));
+                Assert.Equal(HResult.S_FALSE, (HRESULT)enumerator.Next(1, null, null));
 
                 // Reset.
-                Assert.Equal(HRESULT.Values.S_OK, (HRESULT)enumerator.Reset());
+                Assert.Equal(HResult.S_OK, (HRESULT)enumerator.Reset());
             }
         }
 
@@ -1899,13 +1899,13 @@ namespace System.Windows.Forms.Tests
 
             for (int i = 0; i < 2; i++)
             {
-                Assert.Equal(HRESULT.Values.S_FALSE, (HRESULT)enumerator.Next(celt, result, fetched));
+                Assert.Equal(HResult.S_FALSE, (HRESULT)enumerator.Next(celt, result, fetched));
                 Assert.Equal(0, result[0].cfFormat);
                 Assert.Equal(0, fetched[0]);
 
-                Assert.Equal(HRESULT.Values.S_FALSE, (HRESULT)enumerator.Next(celt, null, null));
+                Assert.Equal(HResult.S_FALSE, (HRESULT)enumerator.Next(celt, null, null));
 
-                Assert.Equal(HRESULT.Values.S_OK, (HRESULT)enumerator.Reset());
+                Assert.Equal(HResult.S_OK, (HRESULT)enumerator.Reset());
             }
         }
 
@@ -1921,11 +1921,11 @@ namespace System.Windows.Forms.Tests
 
             var result = new FORMATETC[1];
             var fetched = new int[1];
-            Assert.Equal(HRESULT.Values.S_FALSE, (HRESULT)enumerator.Skip(celt));
-            Assert.Equal(HRESULT.Values.S_FALSE, (HRESULT)enumerator.Next(1, result, fetched));
+            Assert.Equal(HResult.S_FALSE, (HRESULT)enumerator.Skip(celt));
+            Assert.Equal(HResult.S_FALSE, (HRESULT)enumerator.Next(1, result, fetched));
 
             // Negative.
-            Assert.Equal(HRESULT.Values.S_OK, (HRESULT)enumerator.Skip(-1));
+            Assert.Equal(HResult.S_OK, (HRESULT)enumerator.Skip(-1));
             Assert.Throws<ArgumentOutOfRangeException>("index", () => enumerator.Next(1, result, fetched));
         }
 
@@ -1943,8 +1943,8 @@ namespace System.Windows.Forms.Tests
 
             var result = new FORMATETC[1];
             var fetched = new int[1];
-            Assert.Equal(HRESULT.Values.S_OK, (HRESULT)enumerator.Skip(1));
-            Assert.Equal(HRESULT.Values.S_OK, (HRESULT)enumerator.Next(1, result, fetched));
+            Assert.Equal(HResult.S_OK, (HRESULT)enumerator.Skip(1));
+            Assert.Equal(HResult.S_OK, (HRESULT)enumerator.Next(1, result, fetched));
             Assert.Equal(2, result[0].cfFormat);
             Assert.Equal(DVASPECT.DVASPECT_CONTENT, result[0].dwAspect);
             Assert.Equal(-1, result[0].lindex);
@@ -1953,8 +1953,8 @@ namespace System.Windows.Forms.Tests
             Assert.Equal(1, fetched[0]);
 
             // Skip negative.
-            Assert.Equal(HRESULT.Values.S_OK, (HRESULT)enumerator.Skip(-2));
-            Assert.Equal(HRESULT.Values.S_OK, (HRESULT)enumerator.Next(1, result, fetched));
+            Assert.Equal(HResult.S_OK, (HRESULT)enumerator.Skip(-2));
+            Assert.Equal(HResult.S_OK, (HRESULT)enumerator.Next(1, result, fetched));
             Assert.Equal(unchecked((short)(ushort)(DataFormats.GetFormat("Format1").Id)), result[0].cfFormat);
             Assert.Equal(DVASPECT.DVASPECT_CONTENT, result[0].dwAspect);
             Assert.Equal(-1, result[0].lindex);
@@ -1963,8 +1963,8 @@ namespace System.Windows.Forms.Tests
             Assert.Equal(1, fetched[0]);
 
             // Skip end.
-            Assert.Equal(HRESULT.Values.S_OK, (HRESULT)enumerator.Skip(1));
-            Assert.Equal(HRESULT.Values.S_OK, (HRESULT)enumerator.Next(1, result, fetched));
+            Assert.Equal(HResult.S_OK, (HRESULT)enumerator.Skip(1));
+            Assert.Equal(HResult.S_OK, (HRESULT)enumerator.Next(1, result, fetched));
             Assert.Equal(unchecked((short)(ushort)(DataFormats.GetFormat("Format2").Id)), result[0].cfFormat);
             Assert.Equal(DVASPECT.DVASPECT_CONTENT, result[0].dwAspect);
             Assert.Equal(-1, result[0].lindex);
@@ -1972,11 +1972,11 @@ namespace System.Windows.Forms.Tests
             Assert.Equal(TYMED.TYMED_HGLOBAL, result[0].tymed);
             Assert.Equal(1, fetched[0]);
 
-            Assert.Equal(HRESULT.Values.S_FALSE, (HRESULT)enumerator.Skip(0));
-            Assert.Equal(HRESULT.Values.S_FALSE, (HRESULT)enumerator.Skip(1));
+            Assert.Equal(HResult.S_FALSE, (HRESULT)enumerator.Skip(0));
+            Assert.Equal(HResult.S_FALSE, (HRESULT)enumerator.Skip(1));
 
             // Negative.
-            Assert.Equal(HRESULT.Values.S_OK, (HRESULT)enumerator.Skip(-4));
+            Assert.Equal(HResult.S_OK, (HRESULT)enumerator.Skip(-4));
             Assert.Throws<ArgumentOutOfRangeException>("index", () => enumerator.Next(1, result, fetched));
         }
 
@@ -1995,13 +1995,13 @@ namespace System.Windows.Forms.Tests
 
             for (int i = 0; i < 2; i++)
             {
-                Assert.Equal(HRESULT.Values.S_FALSE, (HRESULT)enumerator.Next(celt, result, fetched));
+                Assert.Equal(HResult.S_FALSE, (HRESULT)enumerator.Next(celt, result, fetched));
                 Assert.Equal(0, result[0].cfFormat);
                 Assert.Equal(0, fetched[0]);
 
-                Assert.Equal(HRESULT.Values.S_FALSE, (HRESULT)enumerator.Next(celt, null, null));
+                Assert.Equal(HResult.S_FALSE, (HRESULT)enumerator.Next(celt, null, null));
 
-                Assert.Equal(HRESULT.Values.S_OK, (HRESULT)enumerator.Reset());
+                Assert.Equal(HResult.S_OK, (HRESULT)enumerator.Reset());
             }
         }
 
@@ -2025,22 +2025,22 @@ namespace System.Windows.Forms.Tests
             for (int i = 0; i < 1; i++)
             {
                 // Fetch nothing.
-                Assert.Equal(HRESULT.Values.S_FALSE, (HRESULT)enumerator.Next(0, result, fetched));
+                Assert.Equal(HResult.S_FALSE, (HRESULT)enumerator.Next(0, result, fetched));
                 Assert.Equal(0, fetched[0]);
 
-                Assert.Equal(HRESULT.Values.S_FALSE, (HRESULT)enumerator.Next(0, null, null));
+                Assert.Equal(HResult.S_FALSE, (HRESULT)enumerator.Next(0, null, null));
 
                 // Fetch negative.
-                Assert.Equal(HRESULT.Values.S_FALSE, (HRESULT)enumerator.Next(-1, result, fetched));
+                Assert.Equal(HResult.S_FALSE, (HRESULT)enumerator.Next(-1, result, fetched));
                 Assert.Equal(0, fetched[0]);
 
-                Assert.Equal(HRESULT.Values.S_FALSE, (HRESULT)enumerator.Next(-1, null, null));
+                Assert.Equal(HResult.S_FALSE, (HRESULT)enumerator.Next(-1, null, null));
 
                 // Null.
                 Assert.Throws<NullReferenceException>(() => enumerator.Next(1, null, fetched));
 
                 // Fetch first.
-                Assert.Equal(HRESULT.Values.S_OK, (HRESULT)enumerator.Next(i + 1, result, fetched));
+                Assert.Equal(HResult.S_OK, (HRESULT)enumerator.Next(i + 1, result, fetched));
                 Assert.Equal(unchecked((short)(ushort)(DataFormats.GetFormat(format1).Id)), result[0].cfFormat);
                 Assert.Equal(DVASPECT.DVASPECT_CONTENT, result[0].dwAspect);
                 Assert.Equal(-1, result[0].lindex);
@@ -2050,7 +2050,7 @@ namespace System.Windows.Forms.Tests
                 Assert.Equal(1, fetched[0]);
 
                 // Fetch second.
-                Assert.Equal(HRESULT.Values.S_OK, (HRESULT)enumerator.Next(i + 1, result, fetched));
+                Assert.Equal(HResult.S_OK, (HRESULT)enumerator.Next(i + 1, result, fetched));
                 Assert.NotEqual(0, result[0].cfFormat);
                 Assert.Equal(DVASPECT.DVASPECT_CONTENT, result[0].dwAspect);
                 Assert.Equal(-1, result[0].lindex);
@@ -2060,11 +2060,11 @@ namespace System.Windows.Forms.Tests
                 Assert.Equal(1, fetched[0]);
 
                 // Fetch another.
-                Assert.Equal(HRESULT.Values.S_FALSE, (HRESULT)enumerator.Next(1, null, null));
-                Assert.Equal(HRESULT.Values.S_FALSE, (HRESULT)enumerator.Next(1, null, null));
+                Assert.Equal(HResult.S_FALSE, (HRESULT)enumerator.Next(1, null, null));
+                Assert.Equal(HResult.S_FALSE, (HRESULT)enumerator.Next(1, null, null));
 
                 // Reset.
-                Assert.Equal(HRESULT.Values.S_OK, (HRESULT)enumerator.Reset());
+                Assert.Equal(HResult.S_OK, (HRESULT)enumerator.Reset());
             }
         }
 
@@ -2087,13 +2087,13 @@ namespace System.Windows.Forms.Tests
 
             for (int i = 0; i < 2; i++)
             {
-                Assert.Equal(HRESULT.Values.S_FALSE, (HRESULT)enumerator.Next(celt, result, fetched));
+                Assert.Equal(HResult.S_FALSE, (HRESULT)enumerator.Next(celt, result, fetched));
                 Assert.Equal(0, result[0].cfFormat);
                 Assert.Equal(0, fetched[0]);
 
-                Assert.Equal(HRESULT.Values.S_FALSE, (HRESULT)enumerator.Next(celt, null, null));
+                Assert.Equal(HResult.S_FALSE, (HRESULT)enumerator.Next(celt, null, null));
 
-                Assert.Equal(HRESULT.Values.S_OK, (HRESULT)enumerator.Reset());
+                Assert.Equal(HResult.S_OK, (HRESULT)enumerator.Reset());
             }
         }
 
@@ -2389,7 +2389,7 @@ namespace System.Windows.Forms.Tests
                 tymed = stgMediumTymed
             };
             COMException ex = Assert.Throws<COMException>(() => iComDataObject.GetDataHere(ref formatetc, ref stgMedium));
-            Assert.Equal(HRESULT.Values.DV_E_TYMED, (HRESULT)ex.HResult);
+            Assert.Equal(HResult.DV_E_TYMED, (HRESULT)ex.HResult);
         }
 
         [WinFormsTheory]
@@ -2414,7 +2414,7 @@ namespace System.Windows.Forms.Tests
                 tymed = stgMediumTymed
             };
             COMException ex = Assert.Throws<COMException>(() => iComDataObject.GetDataHere(ref formatetc, ref stgMedium));
-            Assert.Equal(HRESULT.Values.DV_E_FORMATETC, (HRESULT)ex.HResult);
+            Assert.Equal(HResult.DV_E_FORMATETC, (HRESULT)ex.HResult);
         }
     }
 }

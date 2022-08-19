@@ -438,14 +438,14 @@ namespace System.Windows.Forms
         {
             if (!GetTymedUseable(formatetc.tymed) || !GetTymedUseable(medium.tymed))
             {
-                Marshal.ThrowExceptionForHR((int)HRESULT.Values.DV_E_TYMED);
+                Marshal.ThrowExceptionForHR((int)HResult.DV_E_TYMED);
             }
 
             string format = DataFormats.GetFormat(formatetc.cfFormat).Name;
 
             if (!GetDataPresent(format))
             {
-                Marshal.ThrowExceptionForHR((int)HRESULT.Values.DV_E_FORMATETC);
+                Marshal.ThrowExceptionForHR((int)HResult.DV_E_FORMATETC);
             }
 
             object? data = GetData(format);
@@ -466,7 +466,7 @@ namespace System.Windows.Forms
             }
             else
             {
-                Marshal.ThrowExceptionForHR((int)HRESULT.Values.DV_E_TYMED);
+                Marshal.ThrowExceptionForHR((int)HResult.DV_E_TYMED);
             }
         }
 
@@ -482,7 +482,7 @@ namespace System.Windows.Forms
             }
 
             pdwConnection = 0;
-            return (int)HRESULT.Values.E_NOTIMPL;
+            return (int)HResult.E_NOTIMPL;
         }
 
         /// <summary>
@@ -497,7 +497,7 @@ namespace System.Windows.Forms
                 return;
             }
 
-            Marshal.ThrowExceptionForHR((int)HRESULT.Values.E_NOTIMPL);
+            Marshal.ThrowExceptionForHR((int)HResult.E_NOTIMPL);
         }
 
         /// <summary>
@@ -512,7 +512,7 @@ namespace System.Windows.Forms
             }
 
             enumAdvise = null;
-            return (int)HRESULT.Values.OLE_E_ADVISENOTSUPPORTED;
+            return (int)HResult.OLE_E_ADVISENOTSUPPORTED;
         }
 
         /// <summary>
@@ -531,7 +531,7 @@ namespace System.Windows.Forms
                 return new FormatEnumerator(this);
             }
 
-            throw new ExternalException(SR.ExternalException, (int)HRESULT.Values.E_NOTIMPL);
+            throw new ExternalException(SR.ExternalException, (int)HResult.E_NOTIMPL);
         }
 
         /// <summary>
@@ -580,7 +580,7 @@ namespace System.Windows.Forms
 
             if (!GetTymedUseable(formatetc.tymed))
             {
-                Marshal.ThrowExceptionForHR((int)HRESULT.Values.DV_E_TYMED);
+                Marshal.ThrowExceptionForHR((int)HResult.DV_E_TYMED);
             }
 
             if ((formatetc.tymed & TYMED.TYMED_HGLOBAL) != 0)
@@ -648,28 +648,28 @@ namespace System.Windows.Forms
                         Debug.WriteLineIf(
                             CompModSwitches.DataObject.TraceVerbose,
                             "QueryGetData::returning S_FALSE because cfFormat == 0");
-                        return (int)HRESULT.Values.S_FALSE;
+                        return (int)HResult.S_FALSE;
                     }
                     else if (!GetDataPresent(DataFormats.GetFormat(formatetc.cfFormat).Name))
                     {
-                        return (int)HRESULT.Values.DV_E_FORMATETC;
+                        return (int)HResult.DV_E_FORMATETC;
                     }
                 }
                 else
                 {
-                    return (int)HRESULT.Values.DV_E_TYMED;
+                    return (int)HResult.DV_E_TYMED;
                 }
             }
             else
             {
-                return (int)HRESULT.Values.DV_E_DVASPECT;
+                return (int)HResult.DV_E_DVASPECT;
             }
 
             Debug.WriteLineIf(
                 CompModSwitches.DataObject.TraceVerbose,
                 $"QueryGetData::cfFormat {(ushort)formatetc.cfFormat} found");
 
-            return (int)HRESULT.Values.S_OK;
+            return (int)HResult.S_OK;
         }
 
         /// <summary>
@@ -730,7 +730,7 @@ namespace System.Windows.Forms
 
         private HRESULT SaveDataToHandle(object data, string format, ref STGMEDIUM medium)
         {
-            HRESULT hr = HRESULT.Values.E_FAIL;
+            HRESULT hr = HResult.E_FAIL;
             if (data is Stream dataStream)
             {
                 hr = SaveStreamToHandle(ref medium.unionmember, dataStream);
@@ -767,7 +767,7 @@ namespace System.Windows.Forms
             {
                 // GDI+ does not properly handle saving to DIB images. Since the clipboard will take
                 // an HBITMAP and publish a Dib, we don't need to support this.
-                hr = HRESULT.Values.DV_E_TYMED;
+                hr = HResult.DV_E_TYMED;
             }
             else if (format.Equals(DataFormats.Serializable)
                 || data is ISerializable
@@ -815,13 +815,13 @@ namespace System.Windows.Forms
             handle = PInvoke.GlobalAlloc(GMEM_MOVEABLE, (uint)size);
             if (handle == 0)
             {
-                return HRESULT.Values.E_OUTOFMEMORY;
+                return HResult.E_OUTOFMEMORY;
             }
 
             void* ptr = PInvoke.GlobalLock(handle);
             if (ptr is null)
             {
-                return HRESULT.Values.E_OUTOFMEMORY;
+                return HResult.E_OUTOFMEMORY;
             }
 
             try
@@ -835,7 +835,7 @@ namespace System.Windows.Forms
                 PInvoke.GlobalUnlock(handle);
             }
 
-            return HRESULT.Values.S_OK;
+            return HResult.S_OK;
         }
 
         /// <summary>
@@ -845,12 +845,12 @@ namespace System.Windows.Forms
         {
             if (files is null || files.Length == 0)
             {
-                return HRESULT.Values.S_OK;
+                return HResult.S_OK;
             }
 
             if (handle == IntPtr.Zero)
             {
-                return HRESULT.Values.E_INVALIDARG;
+                return HResult.E_INVALIDARG;
             }
 
             // CF_HDROP consists of a DROPFILES struct followed by an list of strings
@@ -875,13 +875,13 @@ namespace System.Windows.Forms
                 (uint)GMEM_MOVEABLE);
             if (newHandle == 0)
             {
-                return HRESULT.Values.E_OUTOFMEMORY;
+                return HResult.E_OUTOFMEMORY;
             }
 
             void* basePtr = PInvoke.GlobalLock(newHandle);
             if (basePtr is null)
             {
-                return HRESULT.Values.E_OUTOFMEMORY;
+                return HResult.E_OUTOFMEMORY;
             }
 
             // Write out the DROPFILES struct.
@@ -911,7 +911,7 @@ namespace System.Windows.Forms
             dataPtr++;
 
             PInvoke.GlobalUnlock(newHandle);
-            return HRESULT.Values.S_OK;
+            return HResult.S_OK;
         }
 
         /// <summary>
@@ -922,7 +922,7 @@ namespace System.Windows.Forms
         {
             if (handle == IntPtr.Zero)
             {
-                return HRESULT.Values.E_INVALIDARG;
+                return HResult.E_INVALIDARG;
             }
 
             nint newHandle = 0;
@@ -935,13 +935,13 @@ namespace System.Windows.Forms
                     (uint)(GMEM_MOVEABLE | GMEM_ZEROINIT));
                 if (newHandle == 0)
                 {
-                    return HRESULT.Values.E_OUTOFMEMORY;
+                    return HResult.E_OUTOFMEMORY;
                 }
 
                 char* ptr = (char*)PInvoke.GlobalLock(newHandle);
                 if (ptr is null)
                 {
-                    return HRESULT.Values.E_OUTOFMEMORY;
+                    return HResult.E_OUTOFMEMORY;
                 }
 
                 var data = new Span<char>(ptr, str.Length + 1);
@@ -959,13 +959,13 @@ namespace System.Windows.Forms
                         (uint)GMEM_MOVEABLE | (uint)GMEM_ZEROINIT);
                     if (newHandle == 0)
                     {
-                        return HRESULT.Values.E_OUTOFMEMORY;
+                        return HResult.E_OUTOFMEMORY;
                     }
 
                     byte* ptr = (byte*)PInvoke.GlobalLock((nint)newHandle);
                     if (ptr is null)
                     {
-                        return HRESULT.Values.E_OUTOFMEMORY;
+                        return HResult.E_OUTOFMEMORY;
                     }
 
                     PInvoke.WideCharToMultiByte(PInvoke.CP_ACP, 0, str, str.Length, ptr, pinvokeSize, null, null);
@@ -974,14 +974,14 @@ namespace System.Windows.Forms
             }
 
             PInvoke.GlobalUnlock(newHandle);
-            return HRESULT.Values.S_OK;
+            return HResult.S_OK;
         }
 
         private static unsafe HRESULT SaveHtmlToHandle(IntPtr handle, string str)
         {
             if (handle == IntPtr.Zero)
             {
-                return HRESULT.Values.E_INVALIDARG;
+                return HResult.E_INVALIDARG;
             }
 
             int byteLength = Encoding.UTF8.GetByteCount(str);
@@ -991,13 +991,13 @@ namespace System.Windows.Forms
                 (uint)(GMEM_MOVEABLE | GMEM_ZEROINIT));
             if (newHandle == 0)
             {
-                return HRESULT.Values.E_OUTOFMEMORY;
+                return HResult.E_OUTOFMEMORY;
             }
 
             byte* ptr = (byte*)PInvoke.GlobalLock(newHandle);
             if (ptr is null)
             {
-                return HRESULT.Values.E_OUTOFMEMORY;
+                return HResult.E_OUTOFMEMORY;
             }
 
             try
@@ -1011,7 +1011,7 @@ namespace System.Windows.Forms
                 PInvoke.GlobalUnlock(newHandle);
             }
 
-            return HRESULT.Values.S_OK;
+            return HResult.S_OK;
         }
 
         /// <summary>

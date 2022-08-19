@@ -63,7 +63,7 @@ namespace System.Windows.Forms
                     *ppvObj = null;
                 }
 
-                return HRESULT.Values.E_NOINTERFACE;
+                return HResult.E_NOINTERFACE;
             }
 
             /// <inheritdoc/>

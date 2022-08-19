@@ -173,7 +173,7 @@ namespace System.Windows.Forms.ComponentModel.Com2Interop
             }
 
             object[] pVarResult = new object[1];
-            if (GetPropertyValue(component, dispid, pVarResult) == HRESULT.Values.S_OK)
+            if (GetPropertyValue(component, dispid, pVarResult) == HResult.S_OK)
             {
                 succeeded = true;
                 return pVarResult[0];
@@ -189,7 +189,7 @@ namespace System.Windows.Forms.ComponentModel.Com2Interop
         {
             if (!(component is Oleaut32.IDispatch iDispatch))
             {
-                return HRESULT.Values.E_NOINTERFACE;
+                return HResult.E_NOINTERFACE;
             }
 
             try
@@ -208,7 +208,7 @@ namespace System.Windows.Forms.ComponentModel.Com2Interop
                         retval,
                         &pExcepInfo,
                         null);
-                    if (hr == HRESULT.Values.DISP_E_EXCEPTION)
+                    if (hr == HResult.DISP_E_EXCEPTION)
                     {
                         return pExcepInfo.scode;
                     }
@@ -224,7 +224,7 @@ namespace System.Windows.Forms.ComponentModel.Com2Interop
             {
             }
 
-            return HRESULT.Values.E_FAIL;
+            return HResult.E_FAIL;
         }
 
         /// <summary>

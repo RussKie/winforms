@@ -893,8 +893,8 @@ namespace System.Windows.Forms.ComponentModel.Com2Interop
 
             switch (hr.Value)
             {
-                case (int)HRESULT.Values.S_OK:
-                case (int)HRESULT.Values.S_FALSE:
+                case (int)HResult.S_OK:
+                case (int)HResult.S_FALSE:
 
                     if (pVarResult[0] is null || Convert.IsDBNull(pVarResult[0]))
                     {
@@ -906,7 +906,7 @@ namespace System.Windows.Forms.ComponentModel.Com2Interop
                     }
 
                     return lastValue;
-                case (int)HRESULT.Values.DISP_E_EXCEPTION:
+                case (int)HResult.DISP_E_EXCEPTION:
                     return null;
                 default:
                     throw new ExternalException(string.Format(SR.DispInvokeFailed, "GetValue", hr), (int)hr);
@@ -1284,7 +1284,7 @@ namespace System.Windows.Forms.ComponentModel.Com2Interop
                 null);
 
             string errorInfo = null;
-            if (hr == HRESULT.Values.DISP_E_EXCEPTION && excepInfo.scode != 0)
+            if (hr == HResult.DISP_E_EXCEPTION && excepInfo.scode != 0)
             {
                 hr = excepInfo.scode;
                 if (excepInfo.bstrDescription != IntPtr.Zero)
@@ -1295,12 +1295,12 @@ namespace System.Windows.Forms.ComponentModel.Com2Interop
 
             switch (hr.Value)
             {
-                case (int)HRESULT.Values.E_ABORT:
-                case (int)HRESULT.Values.OLE_E_PROMPTSAVECANCELLED:
+                case (int)HResult.E_ABORT:
+                case (int)HResult.OLE_E_PROMPTSAVECANCELLED:
                     // cancelled checkout, etc.
                     return;
-                case (int)HRESULT.Values.S_OK:
-                case (int)HRESULT.Values.S_FALSE:
+                case (int)HResult.S_OK:
+                case (int)HResult.S_FALSE:
                     OnValueChanged(component, EventArgs.Empty);
                     lastValue = value;
                     return;
@@ -1308,7 +1308,7 @@ namespace System.Windows.Forms.ComponentModel.Com2Interop
                     if (pDisp is Oleaut32.ISupportErrorInfo iSupportErrorInfo)
                     {
                         g = typeof(Oleaut32.IDispatch).GUID;
-                        if (iSupportErrorInfo.InterfaceSupportsErrorInfo(&g) == HRESULT.Values.S_OK)
+                        if (iSupportErrorInfo.InterfaceSupportsErrorInfo(&g) == HResult.S_OK)
                         {
                             WinFormsComWrappers.ErrorInfoWrapper pErrorInfo;
                             Oleaut32.GetErrorInfo(out pErrorInfo);
